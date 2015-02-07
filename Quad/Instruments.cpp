@@ -46,16 +46,21 @@ namespace Quad
         ins.update();
     }
 
+    Vector3f Instruments::GetVelocity()
+    {
+        Vector3f orientation = GetOrientation();
+        Vector3f accel = ins.get_accel();
+    }
+
     Vector3f Instruments::GetGyro()
     {
-        Update();
-        return ins.get_gyro();
+        Vector3f rad = ins.get_gyro();
+        return Vector3f(ToDeg(rad.x), ToDeg(rad.y), ToDeg(rad.z));
     }
 
 
     Vector3f Instruments::GetOrientation()
     {
-        Update();
         float roll;
         float pitch;
         float yaw;

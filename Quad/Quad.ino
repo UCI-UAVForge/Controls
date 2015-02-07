@@ -67,9 +67,9 @@ void loop()
 
     // Ask MPU6050 for gyro data
     Vector3f gyro = ins.GetGyro();
-    float gyroPitch = ToDeg(gyro.y);
-    float gyroRoll = ToDeg(gyro.x);
-    float gyroYaw = ToDeg(gyro.z);
+    float gyroPitch = gyro.y;
+    float gyroRoll = gyro.x;
+    float gyroYaw = gyro.z;
 
     // Do the magic
     if (rcthr > 10) // Throttle raised, turn on stablisation.

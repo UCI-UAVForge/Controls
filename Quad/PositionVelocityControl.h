@@ -1,7 +1,5 @@
-// Copyright 2015 Jason Watkins & Gareth Owen
-// This file is part of the UCI UAVForge Quad-copter Controls System. It is
-// based on the source code provided at 
-// https://ghowen.me/build-your-own-quadcopter-autopilot/
+// Copyright 2015 Jason Watkins
+// This file is part of the UCI UAVForge Quad-copter Controls System.
 //
 // UCI UAVForge Quad-copter Controls System is free software : you can
 // redistribute it and / or modify it under the terms of the GNU General Public
@@ -31,23 +29,21 @@
 
 #include <PID.h>
 
+#include "ControlData.h"
+#include "Instruments.h"
+
 namespace Quad
 {
-    class Instruments
+    class PositionVelocityControl
     {
     public:
-        Instruments(const AP_HAL::HAL& hal);
+        PositionVelocityControl(Instruments& dataSource, ControlData& data);
 
-        Vector3f GetVelocity();
-
-        Vector3f GetGyro();
-        Vector3f GetOrientation();
-
-        void Update();
+        void Execute();
+        void Reset();
 
     private:
-        AP_InertialSensor_MPU6000 ins;
-        const AP_HAL::HAL& hal;
-
+        Instruments& ins;
+        ControlData& cd;
     };
 }
