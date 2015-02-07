@@ -17,31 +17,35 @@
 
 #pragma once
 
+#include <AP_Common.h>
+#include <AP_Math.h>
+#include <AP_Param.h>
+#include <AP_Progmem.h>
+#include <AP_ADC.h>
+#include <AP_InertialSensor.h>
+
+#include <AP_HAL.h>
+#include <AP_HAL_AVR.h>
+
+#include <PID.h>
+
 namespace Quad
 {
-    namespace Util
+    class RotationRateControl
     {
-        long Map(long x, long in_min, long in_max, long out_min, long out_max)
-        {
-            return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-        }
+    public:
+        RotationRateControl();
 
-        long ToPercentage(long x, long min, long max)
-        {
-            return (x - min) * 100 / (max - min);
-        }
+        void Execute(float tPitch, float tRoll, float tYaw, float gPitch, float gRoll, float gYaw);
+        void Reset();
 
-        float Wrap180(float value)
-        {
-            if (value < -180)
-            {
-                return value + 360;
-            }
-            if (value > 180)
-            {
-                return value - 360;
-            }
-            return value;
-        }
-    }
+        long pitch;
+        long roll;
+        long yaw;
+
+    private:
+        PID pitchPID;
+        PID rollPID;
+        PID yawPID;
+    };
 }

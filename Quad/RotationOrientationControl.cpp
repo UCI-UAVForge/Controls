@@ -15,33 +15,44 @@
 // UCI UAVForge Quad-copter Controls System. If not, see
 // <http://www.gnu.org/licenses/>.
 
-#pragma once
+#include "RotationOrientationControl.h"
 
 namespace Quad
 {
-    namespace Util
+    float Wrap180(float value)
     {
-        long Map(long x, long in_min, long in_max, long out_min, long out_max)
+        if (value < -180)
         {
-            return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+            return value + 360;
         }
+        if (value > 180)
+        {
+            return value - 360;
+        }
+        return value;
+    }
 
-        long ToPercentage(long x, long min, long max)
-        {
-            return (x - min) * 100 / (max - min);
-        }
+    RotationOrientationControl::RotationOrientationControl()
+    {
+        // PID Configuration
+        pitchPID.kP(4.5);
 
-        float Wrap180(float value)
-        {
-            if (value < -180)
-            {
-                return value + 360;
-            }
-            if (value > 180)
-            {
-                return value - 360;
-            }
-            return value;
-        }
+        rollPID.kP(4.5);
+
+        yawPID.kP(10);
+    }
+
+    void RotationOrientationControl::Execute(float tPitch, float tRoll, float tYaw, float oPitch, float oRoll, float oYaw)
+    {
+        pitch = constrain(pitchPID.get_pid(tPitch - oPitch, 1), -250, 250);
+        roll = constrain(rollPID.get_pid(tRoll - oRoll, 1), -250, 250);
+        yaw = constrain(yawPID.get_pid(Wrap180(tYaw - oYaw), 1), -360, 360);
+    }
+
+    void RotationOrientationControl::Reset()
+    {
+        pitchPID.reset_I();
+        rollPID.reset_I();
+        yawPID.reset_I();
     }
 }

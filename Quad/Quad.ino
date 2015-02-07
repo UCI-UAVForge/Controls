@@ -32,6 +32,8 @@
 #include "Motors.h"
 #include "Instruments.h"
 #include "RC.h"
+#include "RotationRateControl.h"
+#include "RotationOrientationControl.h"
 
 // ArduPilot Hardware Abstraction Layer
 const AP_HAL::HAL& hal = AP_HAL_AVR_APM2;
@@ -40,38 +42,10 @@ Quad::Motors motors = Quad::Motors(hal);
 Quad::Instruments ins = Quad::Instruments(hal);
 Quad::RC rc = Quad::RC(hal);
 
-#define wrap_180(x) (x < -180 ? x+360 : (x > 180 ? x - 360: x))
+Quad::RotationRateControl rrc;
+Quad::RotationOrientationControl roc;
 
-// PID array (6 pids, two for each axis)
-PID pids[6];
-#define PID_PITCH_RATE 0
-#define PID_ROLL_RATE 1
-#define PID_PITCH_STAB 2
-#define PID_ROLL_STAB 3
-#define PID_YAW_RATE 4
-#define PID_YAW_STAB 5
-
-void setup()
-{
-    // PID Configuration
-    pids[PID_PITCH_RATE].kP(0.7);
-    pids[PID_PITCH_RATE].kI(1);
-    pids[PID_PITCH_RATE].imax(50);
-
-    pids[PID_ROLL_RATE].kP(0.7);
-    pids[PID_ROLL_RATE].kI(1);
-    pids[PID_ROLL_RATE].imax(50);
-
-    pids[PID_YAW_RATE].kP(2.7);
-    pids[PID_YAW_RATE].kI(1);
-    pids[PID_YAW_RATE].imax(50);
-
-    pids[PID_PITCH_STAB].kP(4.5);
-    pids[PID_ROLL_STAB].kP(4.5);
-    pids[PID_YAW_STAB].kP(10);
-
-    // We're ready to go! Now over to loop()
-}
+void setup() {}
 
 void loop()
 {
@@ -98,11 +72,13 @@ void loop()
     float gyroYaw = ToDeg(gyro.z);
 
     // Do the magic
-    if (rcthr > 10) {  // Throttle raised, turn on stablisation.
+    if (rcthr > 10) // Throttle raised, turn on stablisation.
+    {
         // Stablise PIDS
-        float pitch_stab_output = constrain(pids[PID_PITCH_STAB].get_pid((float)rcpit - pitch, 1), -250, 250);
-        float roll_stab_output = constrain(pids[PID_ROLL_STAB].get_pid((float)rcroll - roll, 1), -250, 250);
-        float yaw_stab_output = constrain(pids[PID_YAW_STAB].get_pid(wrap_180(yaw_target - yaw), 1), -360, 360);
+        roc.Execute((float)rcpit, (float)rcroll, (float)yaw_target, pitch, roll, yaw);
+        float pitch_stab_output = roc.pitch;
+        float roll_stab_output = roc.roll;
+        float yaw_stab_output = roc.yaw;
 
         // is pilot asking for yaw change - if so feed directly to rate pid (overwriting yaw stab output)
         if (abs(rcyaw) > 5) {
@@ -111,9 +87,11 @@ void loop()
         }
 
         // rate PIDS
-        long pitch_output = (long)constrain(pids[PID_PITCH_RATE].get_pid(pitch_stab_output - gyroPitch, 1), -500, 500);
-        long roll_output = (long)constrain(pids[PID_ROLL_RATE].get_pid(roll_stab_output - gyroRoll, 1), -500, 500);
-        long yaw_output = (long)constrain(pids[PID_YAW_RATE].get_pid(yaw_stab_output - gyroYaw, 1), -500, 500);
+        rrc.Execute(pitch_stab_output, roll_stab_output, yaw_stab_output,
+            gyroPitch, gyroRoll, gyroYaw);
+        long pitch_output = rrc.pitch;
+        long roll_output = rrc.roll;
+        long yaw_output = rrc.yaw;
 
         // mix pid outputs and send to the motors.
         motors.SetFrontLeft(rcthr + roll_output + pitch_output - yaw_output);
@@ -129,10 +107,8 @@ void loop()
         yaw_target = yaw;
 
         // reset PID integrals whilst on the ground
-        for (int i = 0; i < 6; i++)
-        {
-            pids[i].reset_I();
-        }
+        roc.Reset();
+        rrc.Reset();
     }
 }
 
