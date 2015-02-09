@@ -1,7 +1,5 @@
-// Copyright 2015 Jason Watkins & Gareth Owen
-// This file is part of the UCI UAVForge Quad-copter Controls System. It is
-// based on the source code provided at 
-// https://ghowen.me/build-your-own-quadcopter-autopilot/
+// Copyright 2015 Jason Watkins
+// This file is part of the UCI UAVForge Quad-copter Controls System.
 //
 // UCI UAVForge Quad-copter Controls System is free software : you can
 // redistribute it and / or modify it under the terms of the GNU General Public
@@ -29,14 +27,24 @@ namespace Quad
         hal.gpio->write(40, 1);
 
         // Turn on MPU6050 - quad must be kept still as gyros will calibrate
-        this->ins.init(AP_InertialSensor::COLD_START,
+        ins.init(AP_InertialSensor::COLD_START,
             AP_InertialSensor::RATE_100HZ,
             NULL);
-
         // initialise sensor fusion on MPU6050 chip (aka DigitalMotionProcessing/DMP)
         hal.scheduler->suspend_timer_procs();  // stop bus collisions
         ins.dmp_init();
         hal.scheduler->resume_timer_procs();
+        
+        // Collect samples for several iterations to accumulate error in the gyro
+        float roll, pitch, yaw;
+        for (int i = 0; i < 2000; i++)
+        {
+            ins.update();
+            ins.quaternion.to_euler(&roll, &pitch, &yaw);
+            pitchOffset = pitch;
+            rollOffset = roll;
+            accelOffset = ins.get_accel();
+        }
     }
 
     void Instruments::Update()
@@ -44,12 +52,18 @@ namespace Quad
         // Wait until new orientation data (normally 5ms max)
         while (ins.num_samples_available() == 0);
         ins.update();
+        Vector3f orientation = GetOrientation();
+        Vector3f accel = ins.get_accel() - accelOffset;
+        float deltaT = ins.get_delta_time();
+
+        // Rotate accel to be relative to ground.
+
+        velocity += accel * deltaT;
+
     }
 
     Vector3f Instruments::GetVelocity()
     {
-        Vector3f orientation = GetOrientation();
-        Vector3f accel = ins.get_accel();
     }
 
     Vector3f Instruments::GetGyro()
@@ -65,8 +79,8 @@ namespace Quad
         float pitch;
         float yaw;
         ins.quaternion.to_euler(&roll, &pitch, &yaw);
-        roll = ToDeg(roll);
-        pitch = ToDeg(pitch);
+        roll = ToDeg(roll - rollOffset);
+        pitch = ToDeg(pitch - pitchOffset);
         yaw = ToDeg(yaw);
         return Vector3f(roll, pitch, yaw);
     }

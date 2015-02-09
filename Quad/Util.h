@@ -26,6 +26,11 @@ namespace Quad
             return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
         }
 
+        float Map(float x, float in_min, float in_max, float out_min, float out_max)
+        {
+            return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+        }
+
         long ToPercentage(long x, long min, long max)
         {
             return (x - min) * 100 / (max - min);

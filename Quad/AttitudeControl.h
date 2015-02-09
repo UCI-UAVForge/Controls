@@ -29,21 +29,21 @@
 
 #include <PID.h>
 
-#include "ControlData.h"
-#include "Instruments.h"
-
 namespace Quad
 {
-    class PositionVelocityControl
+    class AttitudeControl
     {
     public:
-        PositionVelocityControl(Instruments& dataSource, ControlData& data);
+        AttitudeControl();
 
-        void Execute();
+        void Execute(float tPitch, float tRoll, float oPitch, float oRoll);
         void Reset();
 
+        float pitch;
+        float roll;
+
     private:
-        Instruments& ins;
-        ControlData& cd;
+        PID pitchPID;
+        PID rollPID;
     };
 }

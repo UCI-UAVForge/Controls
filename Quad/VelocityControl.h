@@ -15,12 +15,35 @@
 // UCI UAVForge Quad-copter Controls System. If not, see
 // <http://www.gnu.org/licenses/>.
 
-#include "PositionVelocityControl.h"
+#pragma once
+
+#include <AP_Common.h>
+#include <AP_Math.h>
+#include <AP_Param.h>
+#include <AP_Progmem.h>
+#include <AP_ADC.h>
+#include <AP_InertialSensor.h>
+
+#include <AP_HAL.h>
+#include <AP_HAL_AVR.h>
+
+#include <PID.h>
+
+#include "ControlData.h"
+#include "Instruments.h"
 
 namespace Quad
 {
-    PositionVelocityControl::PositionVelocityControl(Instruments&  dataSource, ControlData& data)
-        : ins(dataSource), cd(data) {}
+    class VelocityControl
+    {
+    public:
+        VelocityControl(Instruments& dataSource, ControlData& data);
 
+        void Execute();
+        void Reset();
 
+    private:
+        Instruments& ins;
+        ControlData& cd;
+    };
 }

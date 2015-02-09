@@ -15,37 +15,12 @@
 // UCI UAVForge Quad-copter Controls System. If not, see
 // <http://www.gnu.org/licenses/>.
 
-#include "RotationRateControl.h"
+#include "VelocityControl.h"
 
 namespace Quad
 {
-    RotationRateControl::RotationRateControl()
-    {
-        // PID Configuration
-        pitchPID.kP(1.5);
-        pitchPID.kI(0.1);
-        pitchPID.imax(50);
+    VelocityControl::VelocityControl(Instruments&  dataSource, ControlData& data)
+        : ins(dataSource), cd(data) {}
 
-        rollPID.kP(1.5);
-        rollPID.kI(0.1);
-        rollPID.imax(50);
 
-        yawPID.kP(1.5);
-        yawPID.kI(0.1);
-        yawPID.imax(50);
-    }
-
-    void RotationRateControl::Execute(float tPitch, float tRoll, float tYaw, float gPitch, float gRoll, float gYaw)
-    {
-        pitch = (long)constrain(pitchPID.get_pid(tPitch - gPitch, 1), -500, 500);
-        roll = (long)constrain(rollPID.get_pid(tRoll - gRoll, 1), -500, 500);
-        yaw = (long)constrain(yawPID.get_pid(tYaw - gYaw, 1), -500, 500);
-    }
-
-    void RotationRateControl::Reset()
-    {
-        pitchPID.reset_I();
-        rollPID.reset_I();
-        yawPID.reset_I();
-    }
 }

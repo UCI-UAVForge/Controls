@@ -15,37 +15,40 @@
 // UCI UAVForge Quad-copter Controls System. If not, see
 // <http://www.gnu.org/licenses/>.
 
-#pragma once
-
-#include <AP_Common.h>
-#include <AP_Math.h>
-#include <AP_Param.h>
-#include <AP_Progmem.h>
-#include <AP_ADC.h>
-#include <AP_InertialSensor.h>
-
-#include <AP_HAL.h>
-#include <AP_HAL_AVR.h>
-
-#include <PID.h>
+#include "AttitudeControl.h"
 
 namespace Quad
 {
-    class RotationOrientationControl
+    float Wrap180(float value)
     {
-    public:
-        RotationOrientationControl();
+        if (value < -180)
+        {
+            return value + 360;
+        }
+        if (value > 180)
+        {
+            return value - 360;
+        }
+        return value;
+    }
 
-        void Execute(float tPitch, float tRoll, float tYaw, float oPitch, float oRoll, float oYaw);
-        void Reset();
+    AttitudeControl::AttitudeControl()
+    {
+        // PID Configuration
+        pitchPID.kP(4.5);
 
-        float pitch;
-        float roll;
-        float yaw;
+        rollPID.kP(4.5);
+    }
 
-    private:
-        PID pitchPID;
-        PID rollPID;
-        PID yawPID;
-    };
+    void AttitudeControl::Execute(float tPitch, float tRoll, float oPitch, float oRoll)
+    {
+        pitch = constrain(pitchPID.get_pid(tPitch - oPitch, 1), -250, 250);
+        roll = constrain(rollPID.get_pid(tRoll - oRoll, 1), -250, 250);
+    }
+
+    void AttitudeControl::Reset()
+    {
+        pitchPID.reset_I();
+        rollPID.reset_I();
+    }
 }

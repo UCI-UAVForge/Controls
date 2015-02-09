@@ -1,7 +1,5 @@
-// Copyright 2015 Jason Watkins & Gareth Owen
-// This file is part of the UCI UAVForge Quad-copter Controls System. It is
-// based on the source code provided at 
-// https://ghowen.me/build-your-own-quadcopter-autopilot/
+// Copyright 2015 Jason Watkins
+// This file is part of the UCI UAVForge Quad-copter Controls System.
 //
 // UCI UAVForge Quad-copter Controls System is free software : you can
 // redistribute it and / or modify it under the terms of the GNU General Public

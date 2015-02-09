@@ -1,7 +1,5 @@
-// Copyright 2015 Jason Watkins & Gareth Owen
-// This file is part of the UCI UAVForge Quad-copter Controls System. It is
-// based on the source code provided at 
-// https://ghowen.me/build-your-own-quadcopter-autopilot/
+// Copyright 2015 Jason Watkins
+// This file is part of the UCI UAVForge Quad-copter Controls System.
 //
 // UCI UAVForge Quad-copter Controls System is free software : you can
 // redistribute it and / or modify it under the terms of the GNU General Public
@@ -21,14 +19,14 @@
 #include "Util.h"
 
 // Radio min/max values for each stick for my radio (worked out emperically)
-const uint16_t THR_MIN = 1070;
-const uint16_t THR_MAX = 1915;
-const uint16_t YAW_MIN = 1068;
-const uint16_t YAW_MAX = 1915;
-const uint16_t PIT_MIN = 1077;
-const uint16_t PIT_MAX = 1915;
-const uint16_t ROL_MIN = 1090;
-const uint16_t ROL_MAX = 1913;
+const uint16_t THR_MIN = 1000;
+const uint16_t THR_MAX = 2000;
+const uint16_t YAW_MIN = 1100;
+const uint16_t YAW_MAX = 1900;
+const uint16_t PIT_MIN = 1100;
+const uint16_t PIT_MAX = 1900;
+const uint16_t ROL_MIN = 1100;
+const uint16_t ROL_MAX = 1900;
 
 namespace Quad
 {
@@ -42,21 +40,26 @@ namespace Quad
 
     long RC::GetThrottle()
     {
-        return Util::ToPercentage(channels[2], THR_MIN, THR_MAX);
+        return channels[2];
     }
 
-    long RC::GetYaw()
+    float RC::GetYaw()
     {
-        return Util::Map(channels[3], YAW_MIN, YAW_MAX, -180, 180);
+        return Util::Map((float)channels[3], YAW_MIN, YAW_MAX, -180, 180);
     }
 
-    long RC::GetRoll()
+    float RC::GetRoll()
     {
-        return Util::Map(channels[0], ROL_MIN, ROL_MAX, -45, 45);
+        return Util::Map((float)channels[0], ROL_MIN, ROL_MAX, -10, 10);
     }
 
-    long RC::GetPitch()
+    float RC::GetPitch()
     {
-        return Util::Map(channels[1], PIT_MIN, PIT_MAX, -45, 45);
+        return Util::Map((float)channels[1], PIT_MIN, PIT_MAX, -10, 10);
+    }
+
+    uint16_t* RC::GetRaw()
+    {
+        return channels;
     }
 }
