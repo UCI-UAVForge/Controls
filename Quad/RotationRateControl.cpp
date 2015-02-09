@@ -22,17 +22,17 @@ namespace Quad
     RotationRateControl::RotationRateControl()
     {
         // PID Configuration
-        pitchPID.kP(1.5);
-        pitchPID.kI(0.1);
-        pitchPID.imax(50);
+        pitchPID.kP(1);
+        pitchPID.kI(0.01);
+        pitchPID.imax(10);
 
-        rollPID.kP(1.5);
-        rollPID.kI(0.1);
-        rollPID.imax(50);
+        rollPID.kP(1);
+        rollPID.kI(0.01);
+        rollPID.imax(10);
 
         yawPID.kP(1.5);
-        yawPID.kI(0.1);
-        yawPID.imax(50);
+        yawPID.kI(0.01);
+        yawPID.imax(10);
     }
 
     void RotationRateControl::Execute(float tPitch, float tRoll, float tYaw, float gPitch, float gRoll, float gYaw)
