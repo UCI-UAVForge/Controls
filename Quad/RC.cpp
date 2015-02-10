@@ -50,12 +50,12 @@ namespace Quad
 
     float RC::GetRoll()
     {
-        return Util::Map((float)channels[0], ROL_MIN, ROL_MAX, -10, 10);
+        return Util::Map((float)channels[0], ROL_MIN, ROL_MAX, -45, 45);
     }
 
     float RC::GetPitch()
     {
-        return Util::Map((float)channels[1], PIT_MIN, PIT_MAX, -10, 10);
+        return Util::Map((float)channels[1], PIT_MIN, PIT_MAX, -45, 45);
     }
 
     uint16_t* RC::GetRaw()
