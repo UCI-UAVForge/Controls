@@ -16,6 +16,7 @@
 // <http://www.gnu.org/licenses/>.
 
 #include "Instruments.h"
+#include "math.h"
 
 namespace Quad
 {
@@ -52,11 +53,29 @@ namespace Quad
         // Wait until new orientation data (normally 5ms max)
         while (ins.num_samples_available() == 0);
         ins.update();
-        Vector3f orientation = GetOrientation();
+
+        float roll;
+        float pitch;
+        float yaw;
+        ins.quaternion.to_euler(&roll, &pitch, &yaw);
+        roll -= rollOffset;
+        pitch -= pitchOffset;
         Vector3f accel = ins.get_accel() - accelOffset;
         float deltaT = ins.get_delta_time();
 
         // Rotate accel to be relative to ground.
+        accel = Vector3f( // Rotate about x-axis
+            accel.x,
+            accel.y * cos(-roll) - accel.z * sin(-roll),
+            accel.y * sin(-roll) + accel.z * cos(-roll));
+        accel = Vector3f( // Rotate about y-axis
+            accel.x * cos(-pitch) + accel.z * sin(-pitch),
+            accel.y,
+            accel.x * -sin(-pitch) + accel.z * cos(-pitch));
+        accel = Vector3f( // Rotate about z-axis
+            accel.x * cos(-yaw) - accel.z * sin(-yaw),
+            accel.x * sin(-yaw) + accel.z * cos(-yaw),
+            accel.z);
 
         velocity += accel * deltaT;
 
@@ -64,6 +83,7 @@ namespace Quad
 
     Vector3f Instruments::GetVelocity()
     {
+        return velocity;
     }
 
     Vector3f Instruments::GetGyro()
