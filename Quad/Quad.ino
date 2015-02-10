@@ -16,7 +16,7 @@
 // <http://www.gnu.org/licenses/>.
 
 
-//#define TELEM
+#define TELEM
 
 #include <AP_Common.h>
 #include <AP_Math.h>
@@ -93,7 +93,7 @@ int main(void)
         float gyroYaw = gyro.z;
 
         // Do the magic
-        if (rcthr > 1050) // Throttle raised, turn on stablisation.
+        if (rcthr > 1200) // Throttle raised, turn on stablisation.
         {
             // Stablise PIDS
             ac.Execute((float)rcpit, (float)rcroll, pitch, roll);

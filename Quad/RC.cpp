@@ -19,7 +19,7 @@
 #include "Util.h"
 
 // Radio min/max values for each stick for my radio (worked out emperically)
-const uint16_t THR_MIN = 1000;
+const uint16_t THR_MIN = 1100;
 const uint16_t THR_MAX = 2000;
 const uint16_t YAW_MIN = 1100;
 const uint16_t YAW_MAX = 1900;

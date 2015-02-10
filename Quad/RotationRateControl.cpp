@@ -23,15 +23,17 @@ namespace Quad
     {
         // PID Configuration
         pitchPID.kP(1);
-        pitchPID.kI(0.01);
+        pitchPID.kI(0.1);
         pitchPID.imax(10);
+        pitchPID.kD(0.06);
 
         rollPID.kP(1);
-        rollPID.kI(0.01);
+        rollPID.kI(0.1);
         rollPID.imax(10);
+        rollPID.kD(0.015);
 
         yawPID.kP(1.5);
-        yawPID.kI(0.01);
+        yawPID.kI(0.1);
         yawPID.imax(10);
     }
 
