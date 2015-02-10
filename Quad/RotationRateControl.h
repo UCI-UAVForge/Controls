@@ -36,12 +36,8 @@ namespace Quad
     public:
         RotationRateControl();
 
-        void Execute(float tPitch, float tRoll, float tYaw, float gPitch, float gRoll, float gYaw);
+        Vector3ui Execute(Vector3f targets, Vector3f actual);
         void Reset();
-
-        long pitch;
-        long roll;
-        long yaw;
 
     private:
         PID pitchPID;

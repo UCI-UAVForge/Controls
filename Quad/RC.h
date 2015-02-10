@@ -39,9 +39,11 @@ namespace Quad
         void Read();
 
         long GetThrottle();
-        float GetYaw();
-        float GetPitch();
-        float GetRoll();
+        long GetYaw();
+        long GetPitch();
+        long GetRoll();
+
+        Vector3f GetAttitudeInputs();
 
         uint16_t* GetRaw();
 

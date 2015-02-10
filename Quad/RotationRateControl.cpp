@@ -37,11 +37,13 @@ namespace Quad
         yawPID.imax(10);
     }
 
-    void RotationRateControl::Execute(float tPitch, float tRoll, float tYaw, float gPitch, float gRoll, float gYaw)
+    Vector3ui RotationRateControl::Execute(Vector3f targets, Vector3f actual)
     {
-        pitch = (long)constrain(pitchPID.get_pid(tPitch - gPitch, 1), -500, 500);
-        roll = (long)constrain(rollPID.get_pid(tRoll - gRoll, 1), -500, 500);
-        yaw = (long)constrain(yawPID.get_pid(tYaw - gYaw, 1), -500, 500);
+        Vector3f error = targets - actual;
+        return Vector3ui(
+            constrain(rollPID.get_pid(error.x, 1), -500, 500),
+            constrain(pitchPID.get_pid(error.y, 1), -500, 500),
+            constrain(yawPID.get_pid(error.z, 1), -500, 500));
     }
 
     void RotationRateControl::Reset()

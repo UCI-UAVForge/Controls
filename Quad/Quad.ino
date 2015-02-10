@@ -77,42 +77,28 @@ int main(void)
         // Read RC transmitter and map to sensible values
         rc.Read();
         long rcthr = rc.GetThrottle();
-        float rcyaw = rc.GetYaw();
-        float rcpit = rc.GetPitch();
-        float rcroll = rc.GetRoll();
+        Vector3f attitudeTargets = rc.GetAttitudeInputs();
 
         // Ask MPU6050 for orientation
-        Vector3f orientation = ins.GetOrientation();
-        float roll = orientation.x;
-        float pitch = orientation.y;
+        Vector3f attitude = ins.GetOrientation();
 
         // Ask MPU6050 for gyro data
         Vector3f gyro = ins.GetGyro();
-        float gyroRoll = gyro.x;
-        float gyroPitch = gyro.y;
-        float gyroYaw = gyro.z;
 
         // Do the magic
         if (rcthr > 1200) // Throttle raised, turn on stablisation.
         {
             // Stablise PIDS
-            ac.Execute((float)rcpit, (float)rcroll, pitch, roll);
-            float pitch_stab_output = ac.pitch;
-            float roll_stab_output = ac.roll;
-            float yaw_stab_output = abs(rcyaw) > 5 ? rcyaw : 0;
+            Vector3f rateTargets = ac.Execute(attitudeTargets, attitude);
 
             // rate PIDS
-            rrc.Execute(pitch_stab_output, roll_stab_output, yaw_stab_output,
-                gyroPitch, gyroRoll, gyroYaw);
-            long pitch_output = rrc.pitch;
-            long roll_output = rrc.roll;
-            long yaw_output = abs(rrc.yaw) > 10 ? rrc.yaw : 0;
+            Vector3ui outputs = rrc.Execute(rateTargets, gyro);
 
             // mix pid outputs and send to the motors.
-            long fl = rcthr + roll_output + pitch_output + yaw_output;
-            long bl = rcthr + roll_output - pitch_output - yaw_output;
-            long fr = rcthr - roll_output + pitch_output - yaw_output;
-            long br = rcthr - roll_output - pitch_output + yaw_output;
+            long fl = rcthr + outputs.x + outputs.y + outputs.z;
+            long bl = rcthr + outputs.x - outputs.y - outputs.z;
+            long fr = rcthr - outputs.x + outputs.y - outputs.z;
+            long br = rcthr - outputs.x - outputs.y + outputs.z;
             motors.SetFrontLeft(fl);
             motors.SetBackLeft(bl);
             motors.SetFrontRight(fr);
@@ -122,25 +108,25 @@ int main(void)
             b_led->write(0);
             long zero = 0;
             hal.console->write((uint8_t*)(&rcthr), 4);
-            hal.console->write((uint8_t*)(&rcpit), 4);
-            hal.console->write((uint8_t*)(&rcroll), 4);
-            hal.console->write((uint8_t*)(&rcyaw), 4);
+            hal.console->write((uint8_t*)(&attitudeTargets.y), 4);
+            hal.console->write((uint8_t*)(&attitudeTargets.x), 4);
+            hal.console->write((uint8_t*)(&attitudeTargets.z), 4);
 
-            hal.console->write((uint8_t*)(&gyroPitch), 4);
-            hal.console->write((uint8_t*)(&gyroRoll), 4);
-            hal.console->write((uint8_t*)(&gyroYaw), 4);
+            hal.console->write((uint8_t*)(&gyro.y), 4);
+            hal.console->write((uint8_t*)(&gyro.x), 4);
+            hal.console->write((uint8_t*)(&gyro.z), 4);
             hal.console->write((uint8_t*)(&zero), 4);
-            hal.console->write((uint8_t*)(&pitch), 4);
-            hal.console->write((uint8_t*)(&roll), 4);
-            hal.console->write((uint8_t*)(&zero), 4);
+            hal.console->write((uint8_t*)(&attitude.y), 4);
+            hal.console->write((uint8_t*)(&attitude.x), 4);
+            hal.console->write((uint8_t*)(&attitude.z), 4);
 
-            hal.console->write((uint8_t*)(&pitch_stab_output), 4);
-            hal.console->write((uint8_t*)(&roll_stab_output), 4);
-            hal.console->write((uint8_t*)(&yaw_stab_output), 4);
+            hal.console->write((uint8_t*)(&rateTargets.y), 4);
+            hal.console->write((uint8_t*)(&rateTargets.x), 4);
+            hal.console->write((uint8_t*)(&rateTargets.z), 4);
 
-            hal.console->write((uint8_t*)(&pitch_output), 4);
-            hal.console->write((uint8_t*)(&roll_output), 4);
-            hal.console->write((uint8_t*)(&yaw_output), 4);
+            hal.console->write((uint8_t*)(&outputs.y), 4);
+            hal.console->write((uint8_t*)(&outputs.x), 4);
+            hal.console->write((uint8_t*)(&outputs.z), 4);
 
             hal.console->write((uint8_t*)(&fl), 4);
             hal.console->write((uint8_t*)(&fr), 4);

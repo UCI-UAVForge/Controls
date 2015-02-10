@@ -29,6 +29,8 @@
 
 #include <PID.h>
 
+#include <vector3.h>
+
 namespace Quad
 {
     class AttitudeControl
@@ -36,11 +38,8 @@ namespace Quad
     public:
         AttitudeControl();
 
-        void Execute(float tPitch, float tRoll, float oPitch, float oRoll);
+        Vector3f Execute(Vector3f targets, Vector3f actual);
         void Reset();
-
-        float pitch;
-        float roll;
 
     private:
         PID pitchPID;

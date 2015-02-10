@@ -29,7 +29,6 @@
 
 #include <PID.h>
 
-#include "ControlData.h"
 #include "Instruments.h"
 
 namespace Quad
@@ -37,13 +36,13 @@ namespace Quad
     class VelocityControl
     {
     public:
-        VelocityControl(Instruments& dataSource, ControlData& data);
+        VelocityControl();
 
-        void Execute();
+        Vector3f Execute(Vector3f targets, Vector3f actual);
         void Reset();
 
     private:
-        Instruments& ins;
-        ControlData& cd;
+        PID xPID;
+        PID yPID;
     };
 }

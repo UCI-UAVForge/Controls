@@ -43,19 +43,31 @@ namespace Quad
         return channels[2];
     }
 
-    float RC::GetYaw()
+    long RC::GetYaw()
     {
-        return Util::Map((float)channels[3], YAW_MIN, YAW_MAX, -180, 180);
+        return channels[3];
     }
 
-    float RC::GetRoll()
+    long RC::GetRoll()
     {
-        return Util::Map((float)channels[0], ROL_MIN, ROL_MAX, -45, 45);
+        return channels[0];
     }
 
-    float RC::GetPitch()
+    long RC::GetPitch()
     {
-        return Util::Map((float)channels[1], PIT_MIN, PIT_MAX, -45, 45);
+        return channels[1];
+    }
+    
+    Vector3f RC::GetAttitudeInputs()
+    {
+        const float ROL_LIM = 45;
+        const float PIT_LIM = 45;
+        const float YAW_LIM = 180;
+
+        return Vector3f(
+            Util::Map((float)channels[0], ROL_MIN, ROL_MAX, -ROL_LIM, ROL_LIM),
+            Util::Map((float)channels[1], PIT_MIN, PIT_MAX, -PIT_LIM, PIT_LIM),
+            Util::Map((float)channels[3], YAW_MIN, YAW_MAX, -YAW_LIM, YAW_LIM));
     }
 
     uint16_t* RC::GetRaw()

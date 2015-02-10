@@ -19,8 +19,10 @@
 
 namespace Quad
 {
-    VelocityControl::VelocityControl(Instruments&  dataSource, ControlData& data)
-        : ins(dataSource), cd(data) {}
+    VelocityControl::VelocityControl()
+    {
+
+    }
 
 
 }

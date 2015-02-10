@@ -40,10 +40,13 @@ namespace Quad
         rollPID.kP(4.5);
     }
 
-    void AttitudeControl::Execute(float tPitch, float tRoll, float oPitch, float oRoll)
+    Vector3f AttitudeControl::Execute(Vector3f targets, Vector3f actual)
     {
-        pitch = constrain(pitchPID.get_pid(tPitch - oPitch, 1), -250, 250);
-        roll = constrain(rollPID.get_pid(tRoll - oRoll, 1), -250, 250);
+        Vector3f error = targets - actual;
+        return Vector3f(
+            constrain(rollPID.get_pid(error.x, 1), -250, 250),
+            constrain(pitchPID.get_pid(error.y, 1), -250, 250),
+            targets.z > 10 ? targets.z : 0);
     }
 
     void AttitudeControl::Reset()
