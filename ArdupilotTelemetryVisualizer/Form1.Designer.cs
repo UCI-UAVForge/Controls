@@ -118,6 +118,7 @@
 			this.MillisTextBox = new System.Windows.Forms.TextBox();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.FreqLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.PacketTimeLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.RCGroupBox.SuspendLayout();
 			this.panel4.SuspendLayout();
 			this.panel3.SuspendLayout();
@@ -1085,7 +1086,8 @@
 			// statusStrip1
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FreqLabel});
+            this.FreqLabel,
+            this.PacketTimeLabel});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 437);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(846, 30);
@@ -1097,6 +1099,12 @@
 			this.FreqLabel.Name = "FreqLabel";
 			this.FreqLabel.Size = new System.Drawing.Size(53, 25);
 			this.FreqLabel.Text = "00Hz";
+			// 
+			// PacketTimeLabel
+			// 
+			this.PacketTimeLabel.Name = "PacketTimeLabel";
+			this.PacketTimeLabel.Size = new System.Drawing.Size(181, 25);
+			this.PacketTimeLabel.Text = "toolStripStatusLabel1";
 			// 
 			// Form1
 			// 
@@ -1274,6 +1282,7 @@
 		private System.Windows.Forms.TextBox MillisTextBox;
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel FreqLabel;
+		private System.Windows.Forms.ToolStripStatusLabel PacketTimeLabel;
 	}
 }
 

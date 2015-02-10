@@ -19,6 +19,7 @@ namespace ArdupilotTelemetryVisualizer
 		int counter = 0;
 		long[] lastPacket = new long[20];
 		int packetCur = 0;
+		DateTime lastTime;
 
 		public Form1()
 		{
@@ -26,6 +27,7 @@ namespace ArdupilotTelemetryVisualizer
 			sp = new SerialPort("COM3", 115200, Parity.None, 8, StopBits.One);
 			sp.DataReceived += sp_DataReceived;
 			sp.Open();
+			lastTime = DateTime.Now;
 		}
 
 		void sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -76,12 +78,16 @@ namespace ArdupilotTelemetryVisualizer
 						MicrosTextBox.Text = BitConverter.ToInt32(buffer, 96).ToString("#,###");
 					}));
 				}
-				lastPacket[packetCur] = DateTime.Now.Ticks;
-				double freq = (double)lastPacket.Sum() / lastPacket.Length / TimeSpan.TicksPerSecond;
+				DateTime thisTime = DateTime.Now;
+				lastPacket[packetCur] = thisTime.Ticks - lastTime.Ticks;
+				packetCur = (packetCur + 1) % lastPacket.Length;
+				double freq = (double)TimeSpan.TicksPerSecond/ ((double)lastPacket.Sum() / lastPacket.Length);
 				this.Invoke(new Action(() =>
 					{
 						FreqLabel.Text = freq.ToString("00.0") + "Hz";
+						PacketTimeLabel.Text = lastTime.Ticks.ToString("#,###");
 					}));
+				lastTime = thisTime;
 			}
 		}
 	}
