@@ -38,15 +38,15 @@
 
 // ArduPilot Hardware Abstraction Layer
 const AP_HAL::HAL& hal = AP_HAL_AVR_APM2;
-AP_HAL::DigitalSource* b_led;
-AP_HAL::DigitalSource* y_led;
-AP_HAL::DigitalSource* r_led;
 
 int main(void)
 {
     hal.init(0, NULL);
 
-
+    // Initialize LED's
+    AP_HAL::DigitalSource* b_led;
+    AP_HAL::DigitalSource* y_led;
+    AP_HAL::DigitalSource* r_led;
     b_led = hal.gpio->channel(25);
     y_led = hal.gpio->channel(26);
     r_led = hal.gpio->channel(27);
@@ -54,6 +54,7 @@ int main(void)
     y_led->mode(GPIO_OUTPUT);
     r_led->mode(GPIO_OUTPUT);
 
+    // Yellow LED on indicates we are in startup
     b_led->write(1);
     y_led->write(0);
     r_led->write(1);
@@ -64,12 +65,13 @@ int main(void)
 
     Quad::RotationRateControl rrc;
     Quad::AttitudeControl ac;
-
-    y_led->write(1);
-    r_led->write(0);
     
 
     hal.scheduler->system_initialized();
+
+    // Red LED on indicates we are live
+    y_led->write(1);
+    r_led->write(0);
     for (;;)
     {
         ins.Update();
