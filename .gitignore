@@ -65,7 +65,11 @@ ipch/
 # Visual Micro Files #
 ######################
 Visual Micro/
-*.sln
-*.vcxproj
-*.vcxproj.filters
 *.opensdf
+
+# Filter specific Visual Micro project files
+# to prevent interference with other projects
+# where we want to keep the VS files in git
+Quad.sln
+Quad.vcxproj
+Quad.vcxproj.filters
