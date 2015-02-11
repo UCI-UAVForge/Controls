@@ -58,6 +58,13 @@ namespace Quad
         return channels[1];
     }
     
+    float RC::GetAltitudeInput()
+    {
+        const float ALT_LIM = 5;
+        
+        return Util::Map((float)channels[2], THR_MIN, THR_MAX, 0, ALT_LIM);
+    }
+
     Vector3f RC::GetAttitudeInputs()
     {
         const float ROL_LIM = 45;

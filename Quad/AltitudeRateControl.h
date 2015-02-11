@@ -18,29 +18,19 @@
 #pragma once
 
 #include <AP_Math.h>
-#include <AP_HAL.h>
+#include <PID.h>
 
 namespace Quad
 {
-    class RC
+    class AltitudeRateControl
     {
     public:
-        RC(const AP_HAL::HAL& hal);
+        AltitudeRateControl();
 
-        void Read();
-
-        long GetThrottle();
-        long GetYaw();
-        long GetPitch();
-        long GetRoll();
-
-        float GetAltitudeInput();
-        Vector3f GetAttitudeInputs();
-
-        uint16_t* GetRaw();
+        uint16_t Execute(float target, float actual);
+        void Reset();
 
     private:
-        uint16_t channels[8];
-        const AP_HAL::HAL& hal;
+        PID altPID;
     };
 }

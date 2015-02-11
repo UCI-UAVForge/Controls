@@ -15,32 +15,23 @@
 // UCI UAVForge Quad-copter Controls System. If not, see
 // <http://www.gnu.org/licenses/>.
 
-#pragma once
-
-#include <AP_Math.h>
-#include <AP_HAL.h>
+#include "AltitudeRateControl.h"
 
 namespace Quad
 {
-    class RC
+    AltitudeRateControl::AltitudeRateControl()
     {
-    public:
-        RC(const AP_HAL::HAL& hal);
+        altPID.kP(50);
+    }
 
-        void Read();
+    uint16_t AltitudeRateControl::Execute(float target, float actual)
+    {
+        float error = target - actual;
+        return 1500 + constrain(altPID.get_pid(error, 1), -500, 500);
+    }
 
-        long GetThrottle();
-        long GetYaw();
-        long GetPitch();
-        long GetRoll();
-
-        float GetAltitudeInput();
-        Vector3f GetAttitudeInputs();
-
-        uint16_t* GetRaw();
-
-    private:
-        uint16_t channels[8];
-        const AP_HAL::HAL& hal;
-    };
+    void AltitudeRateControl::Reset()
+    {
+        altPID.reset_I();
+    }
 }

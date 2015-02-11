@@ -17,6 +17,7 @@
 
 
 #define TELEM
+//#define RAW_THROTTLE
 
 #include <AP_Common.h>
 #include <AP_Math.h>
@@ -30,8 +31,6 @@
 #include <AP_Declination.h>
 #include <AP_AHRS.h>
 #include <AP_Airspeed.h>
-#include <AC_PID.h>             // PID library
-#include <APM_PI.h>             // PID library
 #include <AP_Buffer.h>          // ArduPilot general purpose FIFO buffer
 #include <AP_InertialSensor.h>
 #include <AP_InertialNav.h>
@@ -46,6 +45,8 @@
 #include "RC.h"
 #include "RotationRateControl.h"
 #include "AttitudeControl.h"
+#include "AltitudeRateControl.h"
+#include "AltitudeControl.h"
 
 // ArduPilot Hardware Abstraction Layer
 const AP_HAL::HAL& hal = AP_HAL_AVR_APM2;
@@ -76,6 +77,9 @@ int main(void)
 
     Quad::RotationRateControl rrc;
     Quad::AttitudeControl ac;
+
+    Quad::AltitudeRateControl altrc;
+    Quad::AltitudeControl altc;
     
 
     hal.scheduler->system_initialized();
@@ -86,21 +90,31 @@ int main(void)
     for (;;)
     {
         ins.Update();
-
-        // Read RC transmitter and map to sensible values
         rc.Read();
-        long rcthr = rc.GetThrottle();
-        Vector3f attitudeTargets = rc.GetAttitudeInputs();
 
-        // Ask MPU6050 for orientation
+        // Get sensor inputs
         Vector3f attitude = ins.GetAttitude();
-
-        // Ask MPU6050 for gyro data
         Vector3f gyro = ins.GetGyro();
+        Vector3f position = ins.GetPosition();
+        Vector3f accel = ins.GetAcceleration();
 
+        long throttle;
+#ifdef RAW_THROTTLE
+        // Use the raw RC input for throttle
+        throttle = rc.GetThrottle();
+#else
+        // Calculate throttle based on desired altitude
+        float targetAlt = rc.GetAltitudeInput();
+        float targetAltRate = altc.Execute(targetAlt, position.z);
+        throttle = altrc.Execute(targetAltRate, accel.z);
+#endif
+        
         // Do the magic
-        if (rcthr > 1200) // Throttle raised, turn on stablisation.
+        if (throttle > 1200) // Throttle raised, turn on stablisation.
         {
+            // Input targets
+            Vector3f attitudeTargets = rc.GetAttitudeInputs();
+
             // Stablise PIDS
             Vector3f rateTargets = ac.Execute(attitudeTargets, attitude);
 
@@ -108,10 +122,10 @@ int main(void)
             Vector3ui outputs = rrc.Execute(rateTargets, gyro);
 
             // mix pid outputs and send to the motors.
-            long fl = rcthr + outputs.x + outputs.y + outputs.z;
-            long bl = rcthr + outputs.x - outputs.y - outputs.z;
-            long fr = rcthr - outputs.x + outputs.y - outputs.z;
-            long br = rcthr - outputs.x - outputs.y + outputs.z;
+            long fl = throttle + outputs.x + outputs.y + outputs.z;
+            long bl = throttle + outputs.x - outputs.y - outputs.z;
+            long fr = throttle - outputs.x + outputs.y - outputs.z;
+            long br = throttle - outputs.x - outputs.y + outputs.z;
             motors.SetFrontLeft(fl);
             motors.SetBackLeft(bl);
             motors.SetFrontRight(fr);
@@ -120,7 +134,7 @@ int main(void)
 #ifdef TELEM
             b_led->write(0);
             long zero = 0;
-            hal.console->write((uint8_t*)(&rcthr), 4);
+            hal.console->write((uint8_t*)(&throttle), 4);
             hal.console->write((uint8_t*)(&attitudeTargets.y), 4);
             hal.console->write((uint8_t*)(&attitudeTargets.x), 4);
             hal.console->write((uint8_t*)(&attitudeTargets.z), 4);
