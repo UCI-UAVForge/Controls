@@ -38,15 +38,19 @@ namespace Quad
         pitchPID.kP(4.5);
 
         rollPID.kP(4.5);
+
+        yawPID.kP(1);
     }
 
     Vector3f AttitudeControl::Execute(Vector3f targets, Vector3f actual)
     {
+        const float LIM = 250;
+
         Vector3f error = targets - actual;
         return Vector3f(
-            constrain(rollPID.get_pid(error.x, 1), -250, 250),
-            constrain(pitchPID.get_pid(error.y, 1), -250, 250),
-            targets.z > 10 ? targets.z : 0);
+            constrain(rollPID.get_pid(error.x, 1), -LIM, LIM),
+            constrain(pitchPID.get_pid(error.y, 1), -LIM, LIM),
+            constrain(yawPID.get_pid(error.z, 1), -LIM, LIM));
     }
 
     void AttitudeControl::Reset()

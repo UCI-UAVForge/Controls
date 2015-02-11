@@ -87,6 +87,8 @@ int main(void)
     // Red LED on indicates we are live
     y_led->write(1);
     r_led->write(0);
+
+    float yawHoldAngle = 0;
     for (;;)
     {
         ins.Update();
@@ -110,13 +112,20 @@ int main(void)
 #endif
         
         // Do the magic
-        if (throttle > 1200) // Throttle raised, turn on stablisation.
+        if (throttle > rc.GetThrottleMin() + 100) // Throttle raised, turn on stablisation.
         {
             // Input targets
-            Vector3f attitudeTargets = rc.GetAttitudeInputs();
+            Vector2f rcAttitude = rc.GetAttitudeInputs();
+            Vector3f attitudeInputs = Vector3f(rcAttitude.x, rcAttitude.y, yawHoldAngle);
 
             // Stablise PIDS
-            Vector3f rateTargets = ac.Execute(attitudeTargets, attitude);
+            Vector3f rateTargets = ac.Execute(attitudeInputs, attitude);
+            float rcYaw = rc.GetYawInput();
+            if (abs(rcYaw) > 5) // Override yaw rate if there is a stick input.
+            {
+                rateTargets.z = rcYaw;
+                yawHoldAngle = attitude.z;
+            }
 
             // rate PIDS
             Vector3ui outputs = rrc.Execute(rateTargets, gyro);
@@ -135,9 +144,9 @@ int main(void)
             b_led->write(0);
             long zero = 0;
             hal.console->write((uint8_t*)(&throttle), 4);
-            hal.console->write((uint8_t*)(&attitudeTargets.y), 4);
-            hal.console->write((uint8_t*)(&attitudeTargets.x), 4);
-            hal.console->write((uint8_t*)(&attitudeTargets.z), 4);
+            hal.console->write((uint8_t*)(&rcAttitude.y), 4);
+            hal.console->write((uint8_t*)(&rcAttitude.x), 4);
+            hal.console->write((uint8_t*)(&rcYaw), 4);
 
             hal.console->write((uint8_t*)(&gyro.y), 4);
             hal.console->write((uint8_t*)(&gyro.x), 4);

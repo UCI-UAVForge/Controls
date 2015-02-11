@@ -35,9 +35,11 @@ namespace Quad
         long GetRoll();
 
         float GetAltitudeInput();
-        Vector3f GetAttitudeInputs();
+        Vector2f GetAttitudeInputs();
+        float GetYawInput();
 
         uint16_t* GetRaw();
+        uint16_t GetThrottleMin();
 
     private:
         uint16_t channels[8];

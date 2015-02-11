@@ -33,5 +33,6 @@ namespace Quad
     private:
         PID pitchPID;
         PID rollPID;
+        PID yawPID;
     };
 }
