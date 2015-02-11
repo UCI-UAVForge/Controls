@@ -17,7 +17,12 @@
 
 #pragma once
 
+//#define ENABLE_GPS
+
+#include <AP_Compass.h>
 #include <AP_InertialSensor.h>
+#include <AP_InertialNav.h>
+#include <AP_GPS.h>
 #include <AP_HAL.h>
 
 namespace Quad
@@ -27,20 +32,31 @@ namespace Quad
     public:
         Instruments(const AP_HAL::HAL& hal);
 
+        Vector3f GetAcceleration();
         Vector3f GetVelocity();
+        Vector3f GetPosition();
 
         Vector3f GetGyro();
-        Vector3f GetOrientation();
+        Vector3f GetAttitude();
+        float GetHeading();
 
         void Update();
 
     private:
-        AP_InertialSensor_MPU6000 ins;
         const AP_HAL::HAL& hal;
-        float headingOffset;
-        float pitchOffset;
-        float rollOffset;
-        Vector3f accelOffset;
-        Vector3f velocity;
+
+        AP_InertialSensor_MPU6000 ins;
+        AP_Compass_HMC5843 compass;
+        AP_Baro_MS5611 baro;
+#ifdef ENABLE_GPS
+        AP_GPS_UBLOX* gps;
+#else
+        GPS *gps;
+#endif
+
+        AP_AHRS_MPU6000 ahrs;
+        AP_InertialNav nav;
+
+        uint32_t lastUpdate;
     };
 }

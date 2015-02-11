@@ -16,92 +16,95 @@
 // <http://www.gnu.org/licenses/>.
 
 #include "Instruments.h"
-#include "math.h"
+
+const float MAG_DECLINATION = 12.08; // 12.08 for UCI as of 2015
 
 namespace Quad
 {
     Instruments::Instruments(const AP_HAL::HAL& hal)
-        : hal(hal)
+        : hal(hal), baro(&AP_Baro_MS5611::spi), ahrs(&ins, (GPS*&)gps), nav(&ahrs, &ins, &baro, (GPS**)&gps)
     {
-        // Turn off Barometer to avoid bus collisions
+        // we need to stop the barometer from holding the SPI bus
+        // TODO: Does this stop the barometer from working?
         hal.gpio->pinMode(40, GPIO_OUTPUT);
         hal.gpio->write(40, 1);
 
-        // Turn on MPU6050 - quad must be kept still as gyros will calibrate
+        // Turn on MPU6000 - quad must be kept still as gyros will calibrate
         ins.init(AP_InertialSensor::COLD_START,
             AP_InertialSensor::RATE_100HZ,
             NULL);
-        // initialise sensor fusion on MPU6050 chip (aka DigitalMotionProcessing/DMP)
+        // initialise sensor fusion on MPU6000 chip (aka DigitalMotionProcessing/DMP)
         hal.scheduler->suspend_timer_procs();  // stop bus collisions
         ins.dmp_init();
         hal.scheduler->resume_timer_procs();
-        
-        // Collect samples for several iterations to accumulate error in the gyro
-        float roll, pitch, yaw;
-        for (int i = 0; i < 2000; i++)
-        {
-            ins.update();
-            ins.quaternion.to_euler(&roll, &pitch, &yaw);
-            pitchOffset = pitch;
-            rollOffset = roll;
-            accelOffset = ins.get_accel();
-        }
+
+        // Initialize compass
+        compass.init();
+        compass.set_declination(ToRad(MAG_DECLINATION));
+
+        // Set ahrs compass
+        ahrs.set_compass(&compass);
+
+        // Initialize inertial nav
+        nav.init();
+        nav.set_velocity_xy(0, 0);
+        nav.set_current_position(0, 0);
+
+        // Initialize GPS
+#ifdef ENABLE_GPS
+        gps->init(hal.uartB, GPS::GPS_ENGINE_AIRBORNE_2G);
+#endif
     }
 
     void Instruments::Update()
     {
         // Wait until new orientation data (normally 5ms max)
         while (ins.num_samples_available() == 0);
-        ins.update();
 
-        float roll;
-        float pitch;
-        float yaw;
-        ins.quaternion.to_euler(&roll, &pitch, &yaw);
-        roll -= rollOffset;
-        pitch -= pitchOffset;
-        Vector3f accel = ins.get_accel() - accelOffset;
-        float deltaT = ins.get_delta_time();
+        uint32_t now = hal.scheduler->micros();
+        // Note: ins will be updated by ahrs automatically
+        //ins.update();
+        compass.accumulate();
+        baro.accumulate();
+        ahrs.update();
+        nav.update((now - lastUpdate) / 1000000.0F);
+        lastUpdate = now;
+    }
 
-        // Rotate accel to be relative to ground.
-        accel = Vector3f( // Rotate about x-axis
-            accel.x,
-            accel.y * cos(-roll) - accel.z * sin(-roll),
-            accel.y * sin(-roll) + accel.z * cos(-roll));
-        accel = Vector3f( // Rotate about y-axis
-            accel.x * cos(-pitch) + accel.z * sin(-pitch),
-            accel.y,
-            accel.x * -sin(-pitch) + accel.z * cos(-pitch));
-        accel = Vector3f( // Rotate about z-axis
-            accel.x * cos(-yaw) - accel.z * sin(-yaw),
-            accel.x * sin(-yaw) + accel.z * cos(-yaw),
-            accel.z);
-
-        velocity += accel * deltaT;
-
+    Vector3f Instruments::GetAcceleration()
+    {
+        return ahrs.get_accel_ef();
     }
 
     Vector3f Instruments::GetVelocity()
     {
-        return velocity;
+        return nav.get_velocity() * 100;
+    }
+
+    Vector3f Instruments::GetPosition()
+    {
+        return nav.get_position() * 100;
     }
 
     Vector3f Instruments::GetGyro()
     {
-        Vector3f rad = ins.get_gyro();
+        Vector3f rad = ahrs.get_gyro();
         return Vector3f(ToDeg(rad.x), ToDeg(rad.y), ToDeg(rad.z));
     }
-
-
-    Vector3f Instruments::GetOrientation()
+    
+    Vector3f Instruments::GetAttitude()
     {
+        Matrix3f dcm = ahrs.get_dcm_matrix();
         float roll;
         float pitch;
         float yaw;
-        ins.quaternion.to_euler(&roll, &pitch, &yaw);
-        roll = ToDeg(roll - rollOffset);
-        pitch = ToDeg(pitch - pitchOffset);
-        yaw = ToDeg(yaw);
-        return Vector3f(roll, pitch, yaw);
+        dcm.to_euler(&roll, &pitch, &yaw);
+        return Vector3f(ToDeg(roll), ToDeg(pitch), ToDeg(yaw));
+    }
+
+    float Instruments::GetHeading()
+    {
+        compass.read();
+        return compass.calculate_heading(ahrs.get_dcm_matrix());
     }
 }

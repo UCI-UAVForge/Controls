@@ -23,7 +23,18 @@
 #include <AP_Param.h>
 #include <AP_Progmem.h>
 #include <AP_ADC.h>
+#include <AP_GPS.h>             // ArduPilot GPS library
+#include <AP_Baro.h>            // ArduPilot Mega Barometer Library
+#include <Filter.h>
+#include <AP_Compass.h>         // ArduPilot Mega Magnetometer Library
+#include <AP_Declination.h>
+#include <AP_AHRS.h>
+#include <AP_Airspeed.h>
+#include <AC_PID.h>             // PID library
+#include <APM_PI.h>             // PID library
+#include <AP_Buffer.h>          // ArduPilot general purpose FIFO buffer
 #include <AP_InertialSensor.h>
+#include <AP_InertialNav.h>
 
 #include <AP_HAL.h>
 #include <AP_HAL_AVR.h>
@@ -82,7 +93,7 @@ int main(void)
         Vector3f attitudeTargets = rc.GetAttitudeInputs();
 
         // Ask MPU6050 for orientation
-        Vector3f attitude = ins.GetOrientation();
+        Vector3f attitude = ins.GetAttitude();
 
         // Ask MPU6050 for gyro data
         Vector3f gyro = ins.GetGyro();
