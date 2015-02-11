@@ -21,7 +21,24 @@ namespace Quad
 {
     VelocityControl::VelocityControl()
     {
+        xPID.kP(1);
+        yPID.kP(1);
+    }
 
+    Vector2f VelocityControl::Execute(Vector2f targets, Vector2f actual)
+    {
+        const float LIM = 45;
+
+        Vector2f error = targets - actual;
+        return Vector2f(
+            constrain(xPID.get_pid(error.x, 1), -LIM, LIM),
+            constrain(yPID.get_pid(error.y, 1), -LIM, LIM));
+    }
+
+    void VelocityControl::Reset()
+    {
+        xPID.reset_I();
+        yPID.reset_I();
     }
 
 

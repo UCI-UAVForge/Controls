@@ -50,7 +50,7 @@ namespace Quad
         return Vector3f(
             constrain(rollPID.get_pid(error.x, 1), -LIM, LIM),
             constrain(pitchPID.get_pid(error.y, 1), -LIM, LIM),
-            constrain(yawPID.get_pid(error.z, 1), -LIM, LIM));
+            constrain(yawPID.get_pid(Wrap180(error.z), 1), -LIM, LIM));
     }
 
     void AttitudeControl::Reset()

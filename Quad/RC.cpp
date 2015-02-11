@@ -79,7 +79,17 @@ namespace Quad
     {
         const float YAW_LIM = 180;
 
-        return Util::Map((float)channels[3], YAW_MIN, YAW_MAX, -YAW_LIM, YAW_LIM)
+        return Util::Map((float)channels[3], YAW_MIN, YAW_MAX, -YAW_LIM, YAW_LIM);
+    }
+    
+    Vector2f RC::GetVelocityInputs()
+    {
+        const float X_LIM = 2;
+        const float Y_LIM = 2;
+
+        return Vector2f(
+            Util::Map((float)channels[0], ROL_MIN, ROL_MAX, -X_LIM, X_LIM),
+            Util::Map((float)channels[1], PIT_MIN, PIT_MAX, -Y_LIM, Y_LIM));
     }
 
     uint16_t* RC::GetRaw()

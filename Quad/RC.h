@@ -38,6 +38,8 @@ namespace Quad
         Vector2f GetAttitudeInputs();
         float GetYawInput();
 
+        Vector2f GetVelocityInputs();
+
         uint16_t* GetRaw();
         uint16_t GetThrottleMin();
 

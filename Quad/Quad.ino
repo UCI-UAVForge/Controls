@@ -18,6 +18,7 @@
 
 #define TELEM
 //#define RAW_THROTTLE
+#define VELOCITY_CONTROL
 
 #include <AP_Common.h>
 #include <AP_Math.h>
@@ -45,6 +46,7 @@
 #include "RC.h"
 #include "RotationRateControl.h"
 #include "AttitudeControl.h"
+#include "VelocityControl.h"
 #include "AltitudeRateControl.h"
 #include "AltitudeControl.h"
 
@@ -56,20 +58,20 @@ int main(void)
     hal.init(0, NULL);
 
     // Initialize LED's
-    AP_HAL::DigitalSource* b_led;
-    AP_HAL::DigitalSource* y_led;
-    AP_HAL::DigitalSource* r_led;
-    b_led = hal.gpio->channel(25);
-    y_led = hal.gpio->channel(26);
-    r_led = hal.gpio->channel(27);
-    b_led->mode(GPIO_OUTPUT);
-    y_led->mode(GPIO_OUTPUT);
-    r_led->mode(GPIO_OUTPUT);
+    AP_HAL::DigitalSource* ledB;
+    AP_HAL::DigitalSource* ledY;
+    AP_HAL::DigitalSource* ledR;
+    ledB = hal.gpio->channel(25);
+    ledY = hal.gpio->channel(26);
+    ledR = hal.gpio->channel(27);
+    ledB->mode(GPIO_OUTPUT);
+    ledY->mode(GPIO_OUTPUT);
+    ledR->mode(GPIO_OUTPUT);
 
     // Yellow LED on indicates we are in startup
-    b_led->write(1);
-    y_led->write(0);
-    r_led->write(1);
+    ledB->write(1);
+    ledY->write(0);
+    ledR->write(1);
 
     Quad::Motors motors = Quad::Motors(hal);
     Quad::Instruments ins = Quad::Instruments(hal);
@@ -77,6 +79,7 @@ int main(void)
 
     Quad::RotationRateControl rrc;
     Quad::AttitudeControl ac;
+    Quad::VelocityControl vc;
 
     Quad::AltitudeRateControl altrc;
     Quad::AltitudeControl altc;
@@ -85,8 +88,8 @@ int main(void)
     hal.scheduler->system_initialized();
 
     // Red LED on indicates we are live
-    y_led->write(1);
-    r_led->write(0);
+    ledY->write(1);
+    ledR->write(0);
 
     float yawHoldAngle = 0;
     for (;;)
@@ -98,7 +101,8 @@ int main(void)
         Vector3f attitude = ins.GetAttitude();
         Vector3f gyro = ins.GetGyro();
         Vector3f position = ins.GetPosition();
-        Vector3f accel = ins.GetAcceleration();
+        Vector3f velocity = ins.GetVelocity();
+        Vector2f velocity2D = Vector2f(velocity.x, velocity.y);
 
         long throttle;
 #ifdef RAW_THROTTLE
@@ -108,15 +112,22 @@ int main(void)
         // Calculate throttle based on desired altitude
         float targetAlt = rc.GetAltitudeInput();
         float targetAltRate = altc.Execute(targetAlt, position.z);
-        throttle = altrc.Execute(targetAltRate, accel.z);
+        throttle = altrc.Execute(targetAltRate, velocity.z);
 #endif
         
         // Do the magic
         if (throttle > rc.GetThrottleMin() + 100) // Throttle raised, turn on stablisation.
         {
+            Vector2f attitude2D;
+#ifdef VELOCITY_CONTROL
+            Vector2f rcVelocity = rc.GetVelocityInputs();
+            attitude2D = vc.Execute(rcVelocity, velocity2D);
+#else
+            attitude2D = rc.GetAttitudeInputs();
+#endif
+
             // Input targets
-            Vector2f rcAttitude = rc.GetAttitudeInputs();
-            Vector3f attitudeInputs = Vector3f(rcAttitude.x, rcAttitude.y, yawHoldAngle);
+            Vector3f attitudeInputs = Vector3f(attitude2D.x, attitude2D.y, yawHoldAngle);
 
             // Stablise PIDS
             Vector3f rateTargets = ac.Execute(attitudeInputs, attitude);
@@ -141,11 +152,11 @@ int main(void)
             motors.SetBackRight(br);
 
 #ifdef TELEM
-            b_led->write(0);
+            ledB->write(0);
             long zero = 0;
             hal.console->write((uint8_t*)(&throttle), 4);
-            hal.console->write((uint8_t*)(&rcAttitude.y), 4);
-            hal.console->write((uint8_t*)(&rcAttitude.x), 4);
+            hal.console->write((uint8_t*)(&attitude2D.y), 4);
+            hal.console->write((uint8_t*)(&attitude2D.x), 4);
             hal.console->write((uint8_t*)(&rcYaw), 4);
 
             hal.console->write((uint8_t*)(&gyro.y), 4);
@@ -177,7 +188,7 @@ int main(void)
             hal.console->write((uint8_t*)(&ms), 4);
             hal.console->write((uint8_t*)(&us), 4);
 
-            b_led->write(1);
+            ledB->write(1);
 #endif
         }
         else
@@ -185,8 +196,12 @@ int main(void)
             motors.Stop();
 
             // reset PID integrals whilst on the ground
+            vc.Reset();
             ac.Reset();
             rrc.Reset();
+
+            altc.Reset();
+            altrc.Reset();
         }
     }
     return 0;

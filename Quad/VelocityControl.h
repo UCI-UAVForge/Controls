@@ -27,7 +27,7 @@ namespace Quad
     public:
         VelocityControl();
 
-        Vector3f Execute(Vector3f targets, Vector3f actual);
+        Vector2f Execute(Vector2f targets, Vector2f actual);
         void Reset();
 
     private:
