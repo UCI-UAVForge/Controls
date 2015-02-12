@@ -27,7 +27,7 @@ namespace Quad
     public:
         RotationRateControl();
 
-        Vector3ui Execute(Vector3f targets, Vector3f actual);
+        Vector3i Execute(Vector3f targets, Vector3f actual);
         void Reset();
 
     private:

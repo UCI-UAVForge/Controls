@@ -59,9 +59,9 @@ namespace ArdupilotTelemetryVisualizer
 						StabRollTextBox.Text = BitConverter.ToSingle(buffer, 48).ToString();
 						StabYawTextBox.Text = BitConverter.ToSingle(buffer, 52).ToString();
 
-						RatePitchTextBox.Text = BitConverter.ToInt32(buffer, 56).ToString();
-						RateRollTextBox.Text = BitConverter.ToInt32(buffer, 60).ToString();
-						RateYawTextBox.Text = BitConverter.ToInt32(buffer, 64).ToString();
+						RatePitchTextBox.Text = BitConverter.ToInt16(buffer, 56).ToString();
+						RateRollTextBox.Text = BitConverter.ToInt16(buffer, 60).ToString();
+						RateYawTextBox.Text = BitConverter.ToInt16(buffer, 64).ToString();
 
 						FrontLeftTextBox.Text = BitConverter.ToUInt32(buffer, 68).ToString();
 						FrontRightTextBox.Text = BitConverter.ToUInt32(buffer, 72).ToString();

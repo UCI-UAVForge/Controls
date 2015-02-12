@@ -139,7 +139,7 @@ int main(void)
             }
 
             // rate PIDS
-            Vector3ui outputs = rrc.Execute(rateTargets, gyro);
+            Vector3i outputs = rrc.Execute(rateTargets, gyro);
 
             // mix pid outputs and send to the motors.
             long fl = throttle + outputs.x + outputs.y + outputs.z;
@@ -171,9 +171,12 @@ int main(void)
             hal.console->write((uint8_t*)(&rateTargets.x), 4);
             hal.console->write((uint8_t*)(&rateTargets.z), 4);
 
-            hal.console->write((uint8_t*)(&outputs.y), 4);
-            hal.console->write((uint8_t*)(&outputs.x), 4);
-            hal.console->write((uint8_t*)(&outputs.z), 4);
+            hal.console->write((uint8_t*)(&outputs.y), 2);
+            hal.console->write((uint8_t*)(&outputs.y), 2);
+            hal.console->write((uint8_t*)(&outputs.x), 2);
+            hal.console->write((uint8_t*)(&outputs.x), 2);
+            hal.console->write((uint8_t*)(&outputs.z), 2);
+            hal.console->write((uint8_t*)(&outputs.z), 2);
 
             hal.console->write((uint8_t*)(&fl), 4);
             hal.console->write((uint8_t*)(&fr), 4);

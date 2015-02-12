@@ -37,10 +37,10 @@ namespace Quad
         yawPID.imax(10);
     }
 
-    Vector3ui RotationRateControl::Execute(Vector3f targets, Vector3f actual)
+    Vector3i RotationRateControl::Execute(Vector3f targets, Vector3f actual)
     {
         Vector3f error = targets - actual;
-        return Vector3ui(
+        return Vector3i(
             constrain(rollPID.get_pid(error.x, 1), -500, 500),
             constrain(pitchPID.get_pid(error.y, 1), -500, 500),
             constrain(yawPID.get_pid(error.z, 1), -500, 500));
