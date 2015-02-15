@@ -16,9 +16,9 @@
 // <http://www.gnu.org/licenses/>.
 
 
-#define TELEM
-//#define RAW_THROTTLE
-#define VELOCITY_CONTROL
+//#define TELEM
+#define RAW_THROTTLE
+//#define VELOCITY_CONTROL
 
 #include <AP_Common.h>
 #include <AP_Math.h>
@@ -41,9 +41,11 @@
 
 #include <PID.h>
 
+#include "Comms.h"
 #include "Motors.h"
 #include "Instruments.h"
 #include "RC.h"
+
 #include "RotationRateControl.h"
 #include "AttitudeControl.h"
 #include "VelocityControl.h"
@@ -52,6 +54,8 @@
 
 // ArduPilot Hardware Abstraction Layer
 const AP_HAL::HAL& hal = AP_HAL_AVR_APM2;
+
+Quad::Comms::CommsHandler comms = Quad::Comms::CommsHandler(hal);
 
 int main(void)
 {
@@ -91,6 +95,7 @@ int main(void)
     ledY->write(1);
     ledR->write(0);
 
+    uint8_t iterCounter;
     float yawHoldAngle = 0;
     for (;;)
     {
@@ -151,7 +156,34 @@ int main(void)
             motors.SetFrontRight(fr);
             motors.SetBackRight(br);
 
+
+            Quad::Comms::Validity result = comms.Read();
+            if (result == Quad::Comms::V_Valid)
+            {
+                ledB->write(0);
+            }
+
+            ++iterCounter;
+            iterCounter %= 20;
+            uint16_t flags = comms.GetOutputFlags();
+            switch (iterCounter)
+            {
+            case 0:
+                if (flags & 0x0001)
+                {
+                    comms.SendScalar32(0x01, hal.scheduler->micros());
+                }
+                break;
+            case 1:
+                if (flags & 0x0002)
+                {
+                    comms.SendVector4(0x01, rc.GetThrottle(), rc.GetRoll(), rc.GetPitch(), rc.GetYaw());
+                }
+            default:
+                break;
+            }
 #ifdef TELEM
+
             ledB->write(0);
             long zero = 0;
             hal.console->write((uint8_t*)(&throttle), 4);

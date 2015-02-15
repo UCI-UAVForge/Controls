@@ -29,10 +29,10 @@ namespace Quad
 
         void Read();
 
-        long GetThrottle();
-        long GetYaw();
-        long GetPitch();
-        long GetRoll();
+        uint16_t GetThrottle();
+        uint16_t GetYaw();
+        uint16_t GetPitch();
+        uint16_t GetRoll();
 
         float GetAltitudeInput();
         Vector2f GetAttitudeInputs();

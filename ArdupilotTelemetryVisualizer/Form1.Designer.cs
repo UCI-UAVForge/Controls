@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.ThrottleTextBox = new System.Windows.Forms.TextBox();
 			this.RCGroupBox = new System.Windows.Forms.GroupBox();
 			this.panel4 = new System.Windows.Forms.Panel();
@@ -119,6 +120,14 @@
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.FreqLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.PacketTimeLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+			this.PortComboBox = new System.Windows.Forms.ToolStripComboBox();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+			this.RateComboBox = new System.Windows.Forms.ToolStripComboBox();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.ConnectButton = new System.Windows.Forms.ToolStripButton();
 			this.RCGroupBox.SuspendLayout();
 			this.panel4.SuspendLayout();
 			this.panel3.SuspendLayout();
@@ -154,6 +163,7 @@
 			this.panel27.SuspendLayout();
 			this.panel28.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
+			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// ThrottleTextBox
@@ -172,7 +182,7 @@
 			this.RCGroupBox.Controls.Add(this.panel3);
 			this.RCGroupBox.Controls.Add(this.panel2);
 			this.RCGroupBox.Controls.Add(this.panel1);
-			this.RCGroupBox.Location = new System.Drawing.Point(12, 13);
+			this.RCGroupBox.Location = new System.Drawing.Point(12, 41);
 			this.RCGroupBox.Name = "RCGroupBox";
 			this.RCGroupBox.Size = new System.Drawing.Size(200, 157);
 			this.RCGroupBox.TabIndex = 0;
@@ -302,7 +312,7 @@
 			this.SensorsGroupBox.Controls.Add(this.panel6);
 			this.SensorsGroupBox.Controls.Add(this.panel7);
 			this.SensorsGroupBox.Controls.Add(this.panel8);
-			this.SensorsGroupBox.Location = new System.Drawing.Point(218, 13);
+			this.SensorsGroupBox.Location = new System.Drawing.Point(218, 41);
 			this.SensorsGroupBox.Name = "SensorsGroupBox";
 			this.SensorsGroupBox.Size = new System.Drawing.Size(200, 252);
 			this.SensorsGroupBox.TabIndex = 1;
@@ -531,7 +541,7 @@
 			this.groupBox1.Controls.Add(this.panel12);
 			this.groupBox1.Controls.Add(this.panel13);
 			this.groupBox1.Controls.Add(this.panel14);
-			this.groupBox1.Location = new System.Drawing.Point(424, 13);
+			this.groupBox1.Location = new System.Drawing.Point(424, 41);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(200, 126);
 			this.groupBox1.TabIndex = 2;
@@ -636,7 +646,7 @@
 			this.groupBox2.Controls.Add(this.panel15);
 			this.groupBox2.Controls.Add(this.panel16);
 			this.groupBox2.Controls.Add(this.panel17);
-			this.groupBox2.Location = new System.Drawing.Point(424, 145);
+			this.groupBox2.Location = new System.Drawing.Point(424, 173);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(200, 126);
 			this.groupBox2.TabIndex = 3;
@@ -742,7 +752,7 @@
 			this.groupBox3.Controls.Add(this.panel19);
 			this.groupBox3.Controls.Add(this.panel20);
 			this.groupBox3.Controls.Add(this.panel21);
-			this.groupBox3.Location = new System.Drawing.Point(630, 13);
+			this.groupBox3.Location = new System.Drawing.Point(630, 41);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(200, 157);
 			this.groupBox3.TabIndex = 4;
@@ -879,7 +889,7 @@
 			this.groupBox4.Controls.Add(this.panel23);
 			this.groupBox4.Controls.Add(this.panel24);
 			this.groupBox4.Controls.Add(this.panel25);
-			this.groupBox4.Location = new System.Drawing.Point(12, 175);
+			this.groupBox4.Location = new System.Drawing.Point(12, 203);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(200, 157);
 			this.groupBox4.TabIndex = 5;
@@ -1014,7 +1024,7 @@
 			// 
 			this.groupBox5.Controls.Add(this.panel27);
 			this.groupBox5.Controls.Add(this.panel28);
-			this.groupBox5.Location = new System.Drawing.Point(12, 337);
+			this.groupBox5.Location = new System.Drawing.Point(12, 366);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(200, 96);
 			this.groupBox5.TabIndex = 6;
@@ -1085,10 +1095,11 @@
 			// 
 			// statusStrip1
 			// 
+			this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FreqLabel,
             this.PacketTimeLabel});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 437);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 560);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(846, 30);
 			this.statusStrip1.TabIndex = 7;
@@ -1106,11 +1117,71 @@
 			this.PacketTimeLabel.Size = new System.Drawing.Size(181, 25);
 			this.PacketTimeLabel.Text = "toolStripStatusLabel1";
 			// 
+			// toolStrip1
+			// 
+			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabel1,
+            this.PortComboBox,
+            this.toolStripSeparator1,
+            this.toolStripLabel2,
+            this.RateComboBox,
+            this.toolStripSeparator2,
+            this.ConnectButton});
+			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+			this.toolStrip1.Name = "toolStrip1";
+			this.toolStrip1.Size = new System.Drawing.Size(846, 33);
+			this.toolStrip1.TabIndex = 8;
+			this.toolStrip1.Text = "toolStrip1";
+			// 
+			// toolStripLabel1
+			// 
+			this.toolStripLabel1.Name = "toolStripLabel1";
+			this.toolStripLabel1.Size = new System.Drawing.Size(49, 30);
+			this.toolStripLabel1.Text = "Port:";
+			// 
+			// PortComboBox
+			// 
+			this.PortComboBox.Name = "PortComboBox";
+			this.PortComboBox.Size = new System.Drawing.Size(121, 33);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 33);
+			// 
+			// toolStripLabel2
+			// 
+			this.toolStripLabel2.Name = "toolStripLabel2";
+			this.toolStripLabel2.Size = new System.Drawing.Size(96, 30);
+			this.toolStripLabel2.Text = "Baud Rate:";
+			// 
+			// RateComboBox
+			// 
+			this.RateComboBox.Name = "RateComboBox";
+			this.RateComboBox.Size = new System.Drawing.Size(121, 33);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 33);
+			// 
+			// ConnectButton
+			// 
+			this.ConnectButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.ConnectButton.Image = ((System.Drawing.Image)(resources.GetObject("ConnectButton.Image")));
+			this.ConnectButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.ConnectButton.Name = "ConnectButton";
+			this.ConnectButton.Size = new System.Drawing.Size(81, 30);
+			this.ConnectButton.Text = "Connect";
+			this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(846, 467);
+			this.ClientSize = new System.Drawing.Size(846, 590);
+			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
@@ -1185,6 +1256,8 @@
 			this.panel28.PerformLayout();
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
+			this.toolStrip1.ResumeLayout(false);
+			this.toolStrip1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1283,6 +1356,14 @@
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel FreqLabel;
 		private System.Windows.Forms.ToolStripStatusLabel PacketTimeLabel;
+		private System.Windows.Forms.ToolStrip toolStrip1;
+		private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+		private System.Windows.Forms.ToolStripComboBox PortComboBox;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripLabel toolStripLabel2;
+		private System.Windows.Forms.ToolStripComboBox RateComboBox;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripButton ConnectButton;
 	}
 }
 

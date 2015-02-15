@@ -38,22 +38,22 @@ namespace Quad
         hal.rcin->read(channels, 8);
     }
 
-    long RC::GetThrottle()
+    uint16_t RC::GetThrottle()
     {
         return channels[2];
     }
 
-    long RC::GetYaw()
+    uint16_t RC::GetYaw()
     {
         return channels[3];
     }
 
-    long RC::GetRoll()
+    uint16_t RC::GetRoll()
     {
         return channels[0];
     }
 
-    long RC::GetPitch()
+    uint16_t RC::GetPitch()
     {
         return channels[1];
     }
