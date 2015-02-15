@@ -99,6 +99,15 @@ int main(void)
     float yawHoldAngle = 0;
     for (;;)
     {
+        ++iterCounter;
+        iterCounter %= 50;
+        Quad::Comms::Validity result = comms.Read();
+        if (result == Quad::Comms::V_Valid)
+        {
+            ledB->write(0);
+        }
+        uint16_t flags = comms.GetOutputFlags();
+
         ins.Update();
         rc.Read();
 
@@ -109,7 +118,7 @@ int main(void)
         Vector3f velocity = ins.GetVelocity();
         Vector2f velocity2D = Vector2f(velocity.x, velocity.y);
 
-        long throttle;
+        uint16_t throttle;
 #ifdef RAW_THROTTLE
         // Use the raw RC input for throttle
         throttle = rc.GetThrottle();
@@ -120,6 +129,11 @@ int main(void)
         throttle = altrc.Execute(targetAltRate, velocity.z);
 #endif
         
+        Vector3i outputs;
+        uint16_t fl;
+        uint16_t bl;
+        uint16_t fr;
+        uint16_t br;
         // Do the magic
         if (throttle > rc.GetThrottleMin() + 100) // Throttle raised, turn on stablisation.
         {
@@ -144,87 +158,17 @@ int main(void)
             }
 
             // rate PIDS
-            Vector3i outputs = rrc.Execute(rateTargets, gyro);
+            outputs = rrc.Execute(rateTargets, gyro);
 
             // mix pid outputs and send to the motors.
-            long fl = throttle + outputs.x + outputs.y + outputs.z;
-            long bl = throttle + outputs.x - outputs.y - outputs.z;
-            long fr = throttle - outputs.x + outputs.y - outputs.z;
-            long br = throttle - outputs.x - outputs.y + outputs.z;
+            fl = throttle + outputs.x + outputs.y + outputs.z;
+            bl = throttle + outputs.x - outputs.y - outputs.z;
+            fr = throttle - outputs.x + outputs.y - outputs.z;
+            br = throttle - outputs.x - outputs.y + outputs.z;
             motors.SetFrontLeft(fl);
             motors.SetBackLeft(bl);
             motors.SetFrontRight(fr);
             motors.SetBackRight(br);
-
-
-            Quad::Comms::Validity result = comms.Read();
-            if (result == Quad::Comms::V_Valid)
-            {
-                ledB->write(0);
-            }
-
-            ++iterCounter;
-            iterCounter %= 20;
-            uint16_t flags = comms.GetOutputFlags();
-            switch (iterCounter)
-            {
-            case 0:
-                if (flags & 0x0001)
-                {
-                    comms.SendScalar32(0x01, hal.scheduler->micros());
-                }
-                break;
-            case 1:
-                if (flags & 0x0002)
-                {
-                    comms.SendVector4(0x01, rc.GetThrottle(), rc.GetRoll(), rc.GetPitch(), rc.GetYaw());
-                }
-            default:
-                break;
-            }
-#ifdef TELEM
-
-            ledB->write(0);
-            long zero = 0;
-            hal.console->write((uint8_t*)(&throttle), 4);
-            hal.console->write((uint8_t*)(&attitude2D.y), 4);
-            hal.console->write((uint8_t*)(&attitude2D.x), 4);
-            hal.console->write((uint8_t*)(&rcYaw), 4);
-
-            hal.console->write((uint8_t*)(&gyro.y), 4);
-            hal.console->write((uint8_t*)(&gyro.x), 4);
-            hal.console->write((uint8_t*)(&gyro.z), 4);
-            hal.console->write((uint8_t*)(&zero), 4);
-            hal.console->write((uint8_t*)(&attitude.y), 4);
-            hal.console->write((uint8_t*)(&attitude.x), 4);
-            hal.console->write((uint8_t*)(&attitude.z), 4);
-
-            hal.console->write((uint8_t*)(&rateTargets.y), 4);
-            hal.console->write((uint8_t*)(&rateTargets.x), 4);
-            hal.console->write((uint8_t*)(&rateTargets.z), 4);
-
-            hal.console->write((uint8_t*)(&outputs.y), 2);
-            hal.console->write((uint8_t*)(&outputs.y), 2);
-            hal.console->write((uint8_t*)(&outputs.x), 2);
-            hal.console->write((uint8_t*)(&outputs.x), 2);
-            hal.console->write((uint8_t*)(&outputs.z), 2);
-            hal.console->write((uint8_t*)(&outputs.z), 2);
-
-            hal.console->write((uint8_t*)(&fl), 4);
-            hal.console->write((uint8_t*)(&fr), 4);
-            hal.console->write((uint8_t*)(&bl), 4);
-            hal.console->write((uint8_t*)(&br), 4);
-
-            hal.console->write((uint8_t*)(rc.GetRaw()), 8);
-
-            uint32_t ms = hal.scheduler->millis();
-            uint32_t us = hal.scheduler->micros();
-
-            hal.console->write((uint8_t*)(&ms), 4);
-            hal.console->write((uint8_t*)(&us), 4);
-
-            ledB->write(1);
-#endif
         }
         else
         {
@@ -237,6 +181,51 @@ int main(void)
 
             altc.Reset();
             altrc.Reset();
+        }
+        
+        switch (iterCounter)
+        {
+        case 0:
+            if (flags & 0x0001)
+            {
+                comms.SendScalar32(0x01, hal.scheduler->micros());
+            }
+            break;
+        case 1:
+            if (flags & 0x0002)
+            {
+                comms.SendVector4(0x01, rc.GetThrottle(), rc.GetRoll(), rc.GetPitch(), rc.GetYaw());
+            }
+            break;
+        case 3:
+            if (flags & 0x0008)
+            {
+                comms.SendVector4(0x03, fl, bl, fr, br);
+            }
+        case 5:
+            if (flags & 0x0010)
+            {
+                comms.SendVector3(0x01, gyro);
+            }
+            break;
+        case 6:
+            if (flags & 0x0020)
+            {
+                comms.SendVector3(0x02, attitude);
+            }
+            break;
+        case 7:
+            if (flags & 0x0040)
+            {
+                comms.SendScalar32(0x02, ins.GetHeading());
+            }
+        case 12:
+            if (flags & 0x0800)
+            {
+                comms.SendVector3(0x01, outputs);
+            }
+        default:
+            break;
         }
     }
     return 0;

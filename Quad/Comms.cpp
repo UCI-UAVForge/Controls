@@ -226,16 +226,24 @@ namespace Quad
             buffer[0] = (uint8_t)PT_Vector4_16 | 0x90;
             *((uint8_t*)(buffer + 1)) = type;
             *((int16_t*)(buffer + 2)) = w;
-            *((int16_t*)(buffer + 2)) = x;
-            *((int16_t*)(buffer + 2)) = y;
-            *((int16_t*)(buffer + 2)) = z;
+            *((int16_t*)(buffer + 4)) = x;
+            *((int16_t*)(buffer + 6)) = y;
+            *((int16_t*)(buffer + 8)) = z;
             SetChecksum(buffer, 10);
-            hal.console->write(buffer, 12);            
+            hal.console->write(buffer, 12);
         }
 
         void CommsHandler::SendVector4(uint8_t type, uint16_t w, uint16_t x, uint16_t y, uint16_t z)
         {
-            SendVector4(type, *((int16_t*)&w), (int16_t)x, (int16_t)y, (int16_t)z);
+            uint8_t buffer[12];
+            buffer[0] = (uint8_t)PT_Vector4_16 | 0x90;
+            buffer[1] = type;
+            *((uint16_t*)(buffer + 2)) = w;
+            *((uint16_t*)(buffer + 4)) = x;
+            *((uint16_t*)(buffer + 6)) = y;
+            *((uint16_t*)(buffer + 8)) = z;
+            SetChecksum(buffer, 10);
+            hal.console->write(buffer, 12);
         }
 
         uint16_t CommsHandler::GetOutputFlags()

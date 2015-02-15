@@ -62,6 +62,10 @@
     <Compile Include="Serial\Packets\Scalar32.cs" />
     <Compile Include="Serial\Packets\Scalar32Packet.cs" />
     <Compile Include="Serial\Packets\SSOutputPacket.cs" />
+    <Compile Include="Serial\Packets\Vector3_16.cs" />
+    <Compile Include="Serial\Packets\Vector3_16Packet.cs" />
+    <Compile Include="Serial\Packets\Vector3_32.cs" />
+    <Compile Include="Serial\Packets\Vector3_32Packet.cs" />
     <Compile Include="Serial\Packets\Vector4.cs" />
     <Compile Include="Serial\Packets\Vector4Packet.cs" />
     <EmbeddedResource Include="Form1.resx">

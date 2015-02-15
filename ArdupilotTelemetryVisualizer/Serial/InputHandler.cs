@@ -68,7 +68,10 @@ namespace ArdupilotTelemetryVisualizer.Serial
 				}
 				if (!ValidateChecksum(buffer, len + 3))
 				{
-					throw new InvalidOperationException("Invalid cheksum");
+					//throw new InvalidOperationException("Invalid cheksum");
+					byte[] newBuffer = new byte[buffer.Length - 1];
+					Buffer.BlockCopy(buffer, 1, newBuffer, 0, newBuffer.Length);
+					buffer = newBuffer;
 				}
 				else
 				{
@@ -80,6 +83,18 @@ namespace ArdupilotTelemetryVisualizer.Serial
 							Scalar32Type scalarType = (Scalar32Type)buffer[1];
 							Scalar32 value = new Scalar32(BitConverter.ToUInt32(buffer, 2));
 							p = new Scalar32Packet(scalarType, value);
+							break;
+						}
+						case PacketType.Vector3_16:
+						{
+							Vector3_16Type type = (Vector3_16Type)buffer[1];
+							p = new Vector3_16Packet(type, new Vector3_16(buffer, 2));
+							break;
+						}
+						case PacketType.Vector3_32:
+						{
+							Vector3_32Type type = (Vector3_32Type)buffer[1];
+							p = new Vector3_32Packet(new Vector3_32(buffer, 2), type);
 							break;
 						}
 						case PacketType.Vector4_16:
@@ -105,11 +120,12 @@ namespace ArdupilotTelemetryVisualizer.Serial
 							handler(this, new PacketReceivedEventArgs(p));
 						}
 					}
+
+					byte[] newBuffer = new byte[buffer.Length - len - 3];
+					Buffer.BlockCopy(buffer, len + 3, newBuffer, 0, newBuffer.Length);
+					buffer = newBuffer;
 				}
 
-				byte[] newBuffer = new byte[buffer.Length - len - 3];
-				Buffer.BlockCopy(buffer, len + 3, newBuffer, 0, newBuffer.Length);
-				buffer = newBuffer;
 			}
 		}
 

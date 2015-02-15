@@ -85,17 +85,11 @@
 			this.label13 = new System.Windows.Forms.Label();
 			this.RatePitchTextBox = new System.Windows.Forms.TextBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.panel18 = new System.Windows.Forms.Panel();
-			this.label14 = new System.Windows.Forms.Label();
 			this.BackRightTextBox = new System.Windows.Forms.TextBox();
-			this.panel19 = new System.Windows.Forms.Panel();
-			this.label15 = new System.Windows.Forms.Label();
 			this.BackLeftTextBox = new System.Windows.Forms.TextBox();
 			this.panel20 = new System.Windows.Forms.Panel();
-			this.label16 = new System.Windows.Forms.Label();
 			this.FrontRightTextBox = new System.Windows.Forms.TextBox();
 			this.panel21 = new System.Windows.Forms.Panel();
-			this.label17 = new System.Windows.Forms.Label();
 			this.FrontLeftTextBox = new System.Windows.Forms.TextBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.panel22 = new System.Windows.Forms.Panel();
@@ -150,8 +144,6 @@
 			this.panel16.SuspendLayout();
 			this.panel17.SuspendLayout();
 			this.groupBox3.SuspendLayout();
-			this.panel18.SuspendLayout();
-			this.panel19.SuspendLayout();
 			this.panel20.SuspendLayout();
 			this.panel21.SuspendLayout();
 			this.groupBox4.SuspendLayout();
@@ -748,8 +740,6 @@
 			// 
 			// groupBox3
 			// 
-			this.groupBox3.Controls.Add(this.panel18);
-			this.groupBox3.Controls.Add(this.panel19);
 			this.groupBox3.Controls.Add(this.panel20);
 			this.groupBox3.Controls.Add(this.panel21);
 			this.groupBox3.Location = new System.Drawing.Point(630, 41);
@@ -759,127 +749,65 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Motors";
 			// 
-			// panel18
-			// 
-			this.panel18.Controls.Add(this.label14);
-			this.panel18.Controls.Add(this.BackRightTextBox);
-			this.panel18.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel18.Location = new System.Drawing.Point(3, 118);
-			this.panel18.Name = "panel18";
-			this.panel18.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
-			this.panel18.Size = new System.Drawing.Size(194, 31);
-			this.panel18.TabIndex = 5;
-			// 
-			// label14
-			// 
-			this.label14.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label14.Location = new System.Drawing.Point(4, 2);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(86, 27);
-			this.label14.TabIndex = 1;
-			this.label14.Text = "BR:";
-			this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
 			// BackRightTextBox
 			// 
 			this.BackRightTextBox.Dock = System.Windows.Forms.DockStyle.Right;
-			this.BackRightTextBox.Location = new System.Drawing.Point(90, 2);
+			this.BackRightTextBox.Location = new System.Drawing.Point(100, 2);
 			this.BackRightTextBox.Name = "BackRightTextBox";
 			this.BackRightTextBox.ReadOnly = true;
-			this.BackRightTextBox.Size = new System.Drawing.Size(100, 29);
+			this.BackRightTextBox.Size = new System.Drawing.Size(90, 29);
 			this.BackRightTextBox.TabIndex = 0;
 			this.BackRightTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
-			// panel19
-			// 
-			this.panel19.Controls.Add(this.label15);
-			this.panel19.Controls.Add(this.BackLeftTextBox);
-			this.panel19.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel19.Location = new System.Drawing.Point(3, 87);
-			this.panel19.Name = "panel19";
-			this.panel19.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
-			this.panel19.Size = new System.Drawing.Size(194, 31);
-			this.panel19.TabIndex = 4;
-			// 
-			// label15
-			// 
-			this.label15.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label15.Location = new System.Drawing.Point(4, 2);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(86, 27);
-			this.label15.TabIndex = 1;
-			this.label15.Text = "BL:";
-			this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
 			// BackLeftTextBox
 			// 
-			this.BackLeftTextBox.Dock = System.Windows.Forms.DockStyle.Right;
-			this.BackLeftTextBox.Location = new System.Drawing.Point(90, 2);
+			this.BackLeftTextBox.Dock = System.Windows.Forms.DockStyle.Left;
+			this.BackLeftTextBox.Location = new System.Drawing.Point(4, 2);
 			this.BackLeftTextBox.Name = "BackLeftTextBox";
 			this.BackLeftTextBox.ReadOnly = true;
-			this.BackLeftTextBox.Size = new System.Drawing.Size(100, 29);
+			this.BackLeftTextBox.Size = new System.Drawing.Size(90, 29);
 			this.BackLeftTextBox.TabIndex = 0;
 			this.BackLeftTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
 			// panel20
 			// 
-			this.panel20.Controls.Add(this.label16);
-			this.panel20.Controls.Add(this.FrontRightTextBox);
+			this.panel20.Controls.Add(this.BackRightTextBox);
+			this.panel20.Controls.Add(this.BackLeftTextBox);
 			this.panel20.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel20.Location = new System.Drawing.Point(3, 56);
+			this.panel20.Location = new System.Drawing.Point(3, 58);
 			this.panel20.Name = "panel20";
 			this.panel20.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
-			this.panel20.Size = new System.Drawing.Size(194, 31);
+			this.panel20.Size = new System.Drawing.Size(194, 33);
 			this.panel20.TabIndex = 3;
-			// 
-			// label16
-			// 
-			this.label16.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label16.Location = new System.Drawing.Point(4, 2);
-			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(86, 27);
-			this.label16.TabIndex = 1;
-			this.label16.Text = "FR:";
-			this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// FrontRightTextBox
 			// 
 			this.FrontRightTextBox.Dock = System.Windows.Forms.DockStyle.Right;
-			this.FrontRightTextBox.Location = new System.Drawing.Point(90, 2);
+			this.FrontRightTextBox.Location = new System.Drawing.Point(100, 2);
 			this.FrontRightTextBox.Name = "FrontRightTextBox";
 			this.FrontRightTextBox.ReadOnly = true;
-			this.FrontRightTextBox.Size = new System.Drawing.Size(100, 29);
+			this.FrontRightTextBox.Size = new System.Drawing.Size(90, 29);
 			this.FrontRightTextBox.TabIndex = 0;
 			this.FrontRightTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
 			// panel21
 			// 
-			this.panel21.Controls.Add(this.label17);
+			this.panel21.Controls.Add(this.FrontRightTextBox);
 			this.panel21.Controls.Add(this.FrontLeftTextBox);
 			this.panel21.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel21.Location = new System.Drawing.Point(3, 25);
 			this.panel21.Name = "panel21";
 			this.panel21.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
-			this.panel21.Size = new System.Drawing.Size(194, 31);
+			this.panel21.Size = new System.Drawing.Size(194, 33);
 			this.panel21.TabIndex = 2;
-			// 
-			// label17
-			// 
-			this.label17.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label17.Location = new System.Drawing.Point(4, 2);
-			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(86, 27);
-			this.label17.TabIndex = 1;
-			this.label17.Text = "FL:";
-			this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// FrontLeftTextBox
 			// 
-			this.FrontLeftTextBox.Dock = System.Windows.Forms.DockStyle.Right;
-			this.FrontLeftTextBox.Location = new System.Drawing.Point(90, 2);
+			this.FrontLeftTextBox.Dock = System.Windows.Forms.DockStyle.Left;
+			this.FrontLeftTextBox.Location = new System.Drawing.Point(4, 2);
 			this.FrontLeftTextBox.Name = "FrontLeftTextBox";
 			this.FrontLeftTextBox.ReadOnly = true;
-			this.FrontLeftTextBox.Size = new System.Drawing.Size(100, 29);
+			this.FrontLeftTextBox.Size = new System.Drawing.Size(90, 29);
 			this.FrontLeftTextBox.TabIndex = 0;
 			this.FrontLeftTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
@@ -1232,10 +1160,6 @@
 			this.panel17.ResumeLayout(false);
 			this.panel17.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
-			this.panel18.ResumeLayout(false);
-			this.panel18.PerformLayout();
-			this.panel19.ResumeLayout(false);
-			this.panel19.PerformLayout();
 			this.panel20.ResumeLayout(false);
 			this.panel20.PerformLayout();
 			this.panel21.ResumeLayout(false);
@@ -1321,17 +1245,11 @@
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.TextBox RatePitchTextBox;
 		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.Panel panel18;
-		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.TextBox BackRightTextBox;
-		private System.Windows.Forms.Panel panel19;
-		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.TextBox BackLeftTextBox;
 		private System.Windows.Forms.Panel panel20;
-		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.TextBox FrontRightTextBox;
 		private System.Windows.Forms.Panel panel21;
-		private System.Windows.Forms.Label label17;
 		private System.Windows.Forms.TextBox FrontLeftTextBox;
 		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.Panel panel22;

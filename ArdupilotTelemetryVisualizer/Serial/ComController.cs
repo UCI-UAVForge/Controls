@@ -100,6 +100,8 @@ namespace ArdupilotTelemetryVisualizer.Serial
 		{
 			lock (syncRoot)
 			{
+				Disconnect();
+
 				sp = new SerialPort(ComPort, BaudRate, Parity.None, 8, StopBits.One);
 				sp.Open();
 				sp.DataReceived += HandleDataReceived;

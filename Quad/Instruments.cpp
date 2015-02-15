@@ -40,7 +40,7 @@ namespace Quad
 
         // Initialize compass
         compass.init();
-        compass.set_declination(ToRad(MAG_DECLINATION));
+        //compass.set_declination(ToRad(MAG_DECLINATION));
 
         // Set ahrs compass
         ahrs.set_compass(&compass);
@@ -65,6 +65,7 @@ namespace Quad
         // Note: ins will be updated by ahrs automatically
         //ins.update();
         compass.accumulate();
+        compass.read();
         baro.accumulate();
         ahrs.update();
         nav.update((now - lastUpdate) / 1000000.0F);
@@ -104,7 +105,7 @@ namespace Quad
 
     float Instruments::GetHeading()
     {
-        compass.read();
-        return compass.calculate_heading(ahrs.get_dcm_matrix());
+        Vector3f a = GetAttitude();
+        return compass.calculate_heading(a.x, a.y);
     }
 }
