@@ -45,6 +45,10 @@ namespace ArdupilotTelemetryVisualizer
 		protected override void OnFormClosing(FormClosingEventArgs e)
 		{
 			ih.PacketReceived -= ih_PacketReceived;
+			if(controller.IsConnected)
+			{
+				oh.SendSSOutput(0x0000);
+			}
 			base.OnFormClosing(e);
 		}
 
@@ -88,7 +92,7 @@ namespace ArdupilotTelemetryVisualizer
 					switch (packet.VectorType)
 					{
 						case Vector3_16Type.RotPid:
-
+							SetRotationRatePid(packet.Value.Int16X, packet.Value.Int16Y, packet.Value.Int16Z);
 							break;
 						default:
 							break;
@@ -111,10 +115,12 @@ namespace ArdupilotTelemetryVisualizer
 						case Vector3_32Type.Velocity:
 							break;
 						case Vector3_32Type.Position:
+							SetPosition(packet.Value.SingleX, packet.Value.SingleY, packet.Value.SingleZ);
 							break;
 						case Vector3_32Type.Gps:
 							break;
 						case Vector3_32Type.AttitudePid:
+							SetAttitudePid(packet.Value.SingleX, packet.Value.SingleY, packet.Value.SingleZ);
 							break;
 						case Vector3_32Type.VelocityPid:
 							break;
@@ -235,17 +241,45 @@ namespace ArdupilotTelemetryVisualizer
 			}
 		}
 
-		void SetRotationRatePid(ushort x, ushort y, ushort z)
+		void SetRotationRatePid(short x, short y, short z)
 		{
 			if (InvokeRequired)
 			{
-				TryInvoke(new Action<ushort, ushort, ushort>(SetRotationRatePid), x, y, z);
+				TryInvoke(new Action<short, short, short>(SetRotationRatePid), x, y, z);
 			}
 			else
 			{
 				RateRollTextBox.Text = x.ToString("#,##0");
 				RatePitchTextBox.Text = y.ToString("#,##0");
 				RateYawTextBox.Text = z.ToString("#,##0");
+			}
+		}
+
+		void SetAttitudePid(float x, float y, float z)
+		{
+			if (InvokeRequired)
+			{
+				TryInvoke(new Action<float, float, float>(SetAttitudePid), x, y, z);
+			}
+			else
+			{
+				StabRollTextBox.Text = x.ToString("#,##0.00");
+				StabPitchTextBox.Text = y.ToString("#,##0.00");
+				StabYawTextBox.Text = z.ToString("#,##0.00");
+			}
+		}
+
+		void SetPosition(float x, float y, float z)
+		{
+			if (InvokeRequired)
+			{
+				TryInvoke(new Action<float, float, float>(SetPosition), x, y, z);
+			}
+			else
+			{
+				LocXTextBox.Text = x.ToString("#,##0.00");
+				LocYTextBox.Text = y.ToString("#,##0.00");
+				AltitudeTextBox.Text = z.ToString("#,##0.00");
 			}
 		}
 

@@ -102,11 +102,8 @@ int main(void)
         ++iterCounter;
         iterCounter %= 50;
         Quad::Comms::Validity result = comms.Read();
-        if (result == Quad::Comms::V_Valid)
-        {
-            ledB->write(0);
-        }
         uint16_t flags = comms.GetOutputFlags();
+        ledB->write(flags ? 0 : 1);
 
         ins.Update();
         rc.Read();
@@ -130,6 +127,7 @@ int main(void)
 #endif
         
         Vector3i outputs;
+        Vector3f rateTargets;
         uint16_t fl;
         uint16_t bl;
         uint16_t fr;
@@ -149,13 +147,14 @@ int main(void)
             Vector3f attitudeInputs = Vector3f(attitude2D.x, attitude2D.y, yawHoldAngle);
 
             // Stablise PIDS
-            Vector3f rateTargets = ac.Execute(attitudeInputs, attitude);
+            rateTargets = ac.Execute(attitudeInputs, attitude);
             float rcYaw = rc.GetYawInput();
-            if (abs(rcYaw) > 5) // Override yaw rate if there is a stick input.
-            {
-                rateTargets.z = rcYaw;
-                yawHoldAngle = attitude.z;
-            }
+            //if (abs(rcYaw) > 5) // Override yaw rate if there is a stick input.
+            //{
+            //    rateTargets.z = rcYaw;
+            //    yawHoldAngle = attitude.z;
+            //}
+            rateTargets.z = rcYaw;
 
             // rate PIDS
             outputs = rrc.Execute(rateTargets, gyro);
@@ -217,12 +216,23 @@ int main(void)
         case 7:
             if (flags & 0x0040)
             {
-                comms.SendScalar32(0x02, ins.GetHeading());
+                float heading = ins.GetHeading();
+                comms.SendScalarF(0x02, heading);
+            }
+        case 10:
+            if (flags & 0x0200)
+            {
+                comms.SendVector3(0x05, position);
             }
         case 12:
             if (flags & 0x0800)
             {
                 comms.SendVector3(0x01, outputs);
+            }
+        case 13:
+            if (flags & 0x1000)
+            {
+                comms.SendVector3(0x08, rateTargets);
             }
         default:
             break;

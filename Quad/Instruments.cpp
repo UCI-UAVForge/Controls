@@ -22,7 +22,7 @@ const float MAG_DECLINATION = 12.08; // 12.08 for UCI as of 2015
 namespace Quad
 {
     Instruments::Instruments(const AP_HAL::HAL& hal)
-        : hal(hal), baro(&AP_Baro_MS5611::spi), ahrs(&ins, (GPS*&)gps), nav(&ahrs, &ins, &baro, (GPS**)&gps)
+        : hal(hal), baro(&AP_Baro_MS5611::spi)
     {
         // we need to stop the barometer from holding the SPI bus
         // TODO: Does this stop the barometer from working?
@@ -42,18 +42,24 @@ namespace Quad
         compass.init();
         //compass.set_declination(ToRad(MAG_DECLINATION));
 
-        // Set ahrs compass
-        ahrs.set_compass(&compass);
+        // Initialize Barometer
+        baro.init();
+        baro.calibrate();
 
-        // Initialize inertial nav
-        nav.init();
-        nav.set_velocity_xy(0, 0);
-        nav.set_current_position(0, 0);
+        // Warmup and accumulate error...
+        for (int i = 0; i < 1600; i++)
+        {
+            while (ins.num_samples_available() == 0);
 
-        // Initialize GPS
-#ifdef ENABLE_GPS
-        gps->init(hal.uartB, GPS::GPS_ENGINE_AIRBORNE_2G);
-#endif
+            ins.update();
+            compass.accumulate();
+
+            float roll;
+            float pitch;
+            float yaw;
+            ins.quaternion.to_euler(&roll, &pitch, &yaw);
+            attitudeOffset = Vector3f(ToDeg(roll), ToDeg(pitch), ToDeg(yaw));
+        }
     }
 
     void Instruments::Update()
@@ -61,51 +67,49 @@ namespace Quad
         // Wait until new orientation data (normally 5ms max)
         while (ins.num_samples_available() == 0);
 
-        uint32_t now = hal.scheduler->micros();
-        // Note: ins will be updated by ahrs automatically
-        //ins.update();
+        ins.update();
         compass.accumulate();
-        compass.read();
         baro.accumulate();
-        ahrs.update();
-        nav.update((now - lastUpdate) / 1000000.0F);
-        lastUpdate = now;
     }
 
     Vector3f Instruments::GetAcceleration()
     {
-        return ahrs.get_accel_ef();
+        return Vector3f(0, 0, 0);
     }
 
     Vector3f Instruments::GetVelocity()
     {
-        return nav.get_velocity() * 100;
+        return Vector3f(0, 0, 0);
     }
 
     Vector3f Instruments::GetPosition()
     {
-        return nav.get_position() * 100;
+        baro.read();
+        return Vector3f(0, 0, baro.get_altitude());
     }
 
     Vector3f Instruments::GetGyro()
     {
-        Vector3f rad = ahrs.get_gyro();
+        Vector3f rad = ins.get_gyro();
         return Vector3f(ToDeg(rad.x), ToDeg(rad.y), ToDeg(rad.z));
     }
     
     Vector3f Instruments::GetAttitude()
     {
-        Matrix3f dcm = ahrs.get_dcm_matrix();
         float roll;
         float pitch;
         float yaw;
-        dcm.to_euler(&roll, &pitch, &yaw);
-        return Vector3f(ToDeg(roll), ToDeg(pitch), ToDeg(yaw));
+        ins.quaternion.to_euler(&roll, &pitch, &yaw);
+        return Vector3f(ToDeg(roll), ToDeg(pitch), ToDeg(yaw)) - attitudeOffset;
     }
 
     float Instruments::GetHeading()
     {
-        Vector3f a = GetAttitude();
-        return compass.calculate_heading(a.x, a.y);
+        compass.read();
+        float roll;
+        float pitch;
+        float yaw;
+        ins.quaternion.to_euler(&roll, &pitch, &yaw);
+        return ToDeg(compass.calculate_heading(roll, pitch));
     }
 }

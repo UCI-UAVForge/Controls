@@ -35,7 +35,7 @@ namespace ArdupilotTelemetryVisualizer.Serial.Packets
 		Velocity,
 		Position,
 		Gps,
-		AttitudePid,
+		AttitudePid = 8,
 		VelocityPid,
 		AltRatePid,
 		AltPid

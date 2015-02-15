@@ -85,11 +85,11 @@
 			this.label13 = new System.Windows.Forms.Label();
 			this.RatePitchTextBox = new System.Windows.Forms.TextBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.panel20 = new System.Windows.Forms.Panel();
 			this.BackRightTextBox = new System.Windows.Forms.TextBox();
 			this.BackLeftTextBox = new System.Windows.Forms.TextBox();
-			this.panel20 = new System.Windows.Forms.Panel();
-			this.FrontRightTextBox = new System.Windows.Forms.TextBox();
 			this.panel21 = new System.Windows.Forms.Panel();
+			this.FrontRightTextBox = new System.Windows.Forms.TextBox();
 			this.FrontLeftTextBox = new System.Windows.Forms.TextBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.panel22 = new System.Windows.Forms.Panel();
@@ -122,6 +122,16 @@
 			this.RateComboBox = new System.Windows.Forms.ToolStripComboBox();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.ConnectButton = new System.Windows.Forms.ToolStripButton();
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.panel18 = new System.Windows.Forms.Panel();
+			this.label14 = new System.Windows.Forms.Label();
+			this.AltitudeTextBox = new System.Windows.Forms.TextBox();
+			this.panel19 = new System.Windows.Forms.Panel();
+			this.label15 = new System.Windows.Forms.Label();
+			this.LocXTextBox = new System.Windows.Forms.TextBox();
+			this.panel26 = new System.Windows.Forms.Panel();
+			this.label16 = new System.Windows.Forms.Label();
+			this.LocYTextBox = new System.Windows.Forms.TextBox();
 			this.RCGroupBox.SuspendLayout();
 			this.panel4.SuspendLayout();
 			this.panel3.SuspendLayout();
@@ -156,6 +166,10 @@
 			this.panel28.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
+			this.groupBox6.SuspendLayout();
+			this.panel18.SuspendLayout();
+			this.panel19.SuspendLayout();
+			this.panel26.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// ThrottleTextBox
@@ -749,6 +763,17 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Motors";
 			// 
+			// panel20
+			// 
+			this.panel20.Controls.Add(this.BackRightTextBox);
+			this.panel20.Controls.Add(this.BackLeftTextBox);
+			this.panel20.Dock = System.Windows.Forms.DockStyle.Top;
+			this.panel20.Location = new System.Drawing.Point(3, 58);
+			this.panel20.Name = "panel20";
+			this.panel20.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+			this.panel20.Size = new System.Drawing.Size(194, 33);
+			this.panel20.TabIndex = 3;
+			// 
 			// BackRightTextBox
 			// 
 			this.BackRightTextBox.Dock = System.Windows.Forms.DockStyle.Right;
@@ -769,27 +794,6 @@
 			this.BackLeftTextBox.TabIndex = 0;
 			this.BackLeftTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
-			// panel20
-			// 
-			this.panel20.Controls.Add(this.BackRightTextBox);
-			this.panel20.Controls.Add(this.BackLeftTextBox);
-			this.panel20.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel20.Location = new System.Drawing.Point(3, 58);
-			this.panel20.Name = "panel20";
-			this.panel20.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
-			this.panel20.Size = new System.Drawing.Size(194, 33);
-			this.panel20.TabIndex = 3;
-			// 
-			// FrontRightTextBox
-			// 
-			this.FrontRightTextBox.Dock = System.Windows.Forms.DockStyle.Right;
-			this.FrontRightTextBox.Location = new System.Drawing.Point(100, 2);
-			this.FrontRightTextBox.Name = "FrontRightTextBox";
-			this.FrontRightTextBox.ReadOnly = true;
-			this.FrontRightTextBox.Size = new System.Drawing.Size(90, 29);
-			this.FrontRightTextBox.TabIndex = 0;
-			this.FrontRightTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			// 
 			// panel21
 			// 
 			this.panel21.Controls.Add(this.FrontRightTextBox);
@@ -800,6 +804,16 @@
 			this.panel21.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
 			this.panel21.Size = new System.Drawing.Size(194, 33);
 			this.panel21.TabIndex = 2;
+			// 
+			// FrontRightTextBox
+			// 
+			this.FrontRightTextBox.Dock = System.Windows.Forms.DockStyle.Right;
+			this.FrontRightTextBox.Location = new System.Drawing.Point(100, 2);
+			this.FrontRightTextBox.Name = "FrontRightTextBox";
+			this.FrontRightTextBox.ReadOnly = true;
+			this.FrontRightTextBox.Size = new System.Drawing.Size(90, 29);
+			this.FrontRightTextBox.TabIndex = 0;
+			this.FrontRightTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
 			// FrontLeftTextBox
 			// 
@@ -1104,11 +1118,117 @@
 			this.ConnectButton.Text = "Connect";
 			this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
 			// 
+			// groupBox6
+			// 
+			this.groupBox6.Controls.Add(this.panel18);
+			this.groupBox6.Controls.Add(this.panel19);
+			this.groupBox6.Controls.Add(this.panel26);
+			this.groupBox6.Location = new System.Drawing.Point(218, 299);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(200, 126);
+			this.groupBox6.TabIndex = 9;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = "Location";
+			// 
+			// panel18
+			// 
+			this.panel18.Controls.Add(this.label14);
+			this.panel18.Controls.Add(this.AltitudeTextBox);
+			this.panel18.Dock = System.Windows.Forms.DockStyle.Top;
+			this.panel18.Location = new System.Drawing.Point(3, 87);
+			this.panel18.Name = "panel18";
+			this.panel18.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+			this.panel18.Size = new System.Drawing.Size(194, 31);
+			this.panel18.TabIndex = 5;
+			// 
+			// label14
+			// 
+			this.label14.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label14.Location = new System.Drawing.Point(4, 2);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(86, 27);
+			this.label14.TabIndex = 1;
+			this.label14.Text = "Altitude:";
+			this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// AltitudeTextBox
+			// 
+			this.AltitudeTextBox.Dock = System.Windows.Forms.DockStyle.Right;
+			this.AltitudeTextBox.Location = new System.Drawing.Point(90, 2);
+			this.AltitudeTextBox.Name = "AltitudeTextBox";
+			this.AltitudeTextBox.ReadOnly = true;
+			this.AltitudeTextBox.Size = new System.Drawing.Size(100, 29);
+			this.AltitudeTextBox.TabIndex = 0;
+			this.AltitudeTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
+			// panel19
+			// 
+			this.panel19.Controls.Add(this.label15);
+			this.panel19.Controls.Add(this.LocXTextBox);
+			this.panel19.Dock = System.Windows.Forms.DockStyle.Top;
+			this.panel19.Location = new System.Drawing.Point(3, 56);
+			this.panel19.Name = "panel19";
+			this.panel19.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+			this.panel19.Size = new System.Drawing.Size(194, 31);
+			this.panel19.TabIndex = 4;
+			// 
+			// label15
+			// 
+			this.label15.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label15.Location = new System.Drawing.Point(4, 2);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(86, 27);
+			this.label15.TabIndex = 1;
+			this.label15.Text = "X (Right):";
+			this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// LocXTextBox
+			// 
+			this.LocXTextBox.Dock = System.Windows.Forms.DockStyle.Right;
+			this.LocXTextBox.Location = new System.Drawing.Point(90, 2);
+			this.LocXTextBox.Name = "LocXTextBox";
+			this.LocXTextBox.ReadOnly = true;
+			this.LocXTextBox.Size = new System.Drawing.Size(100, 29);
+			this.LocXTextBox.TabIndex = 0;
+			this.LocXTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
+			// panel26
+			// 
+			this.panel26.Controls.Add(this.label16);
+			this.panel26.Controls.Add(this.LocYTextBox);
+			this.panel26.Dock = System.Windows.Forms.DockStyle.Top;
+			this.panel26.Location = new System.Drawing.Point(3, 25);
+			this.panel26.Name = "panel26";
+			this.panel26.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+			this.panel26.Size = new System.Drawing.Size(194, 31);
+			this.panel26.TabIndex = 3;
+			// 
+			// label16
+			// 
+			this.label16.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label16.Location = new System.Drawing.Point(4, 2);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(86, 27);
+			this.label16.TabIndex = 1;
+			this.label16.Text = "Y (Fwd):";
+			this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// LocYTextBox
+			// 
+			this.LocYTextBox.Dock = System.Windows.Forms.DockStyle.Right;
+			this.LocYTextBox.Location = new System.Drawing.Point(90, 2);
+			this.LocYTextBox.Name = "LocYTextBox";
+			this.LocYTextBox.ReadOnly = true;
+			this.LocYTextBox.Size = new System.Drawing.Size(100, 29);
+			this.LocYTextBox.TabIndex = 0;
+			this.LocYTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(846, 590);
+			this.Controls.Add(this.groupBox6);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.groupBox5);
@@ -1182,6 +1302,13 @@
 			this.statusStrip1.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
+			this.groupBox6.ResumeLayout(false);
+			this.panel18.ResumeLayout(false);
+			this.panel18.PerformLayout();
+			this.panel19.ResumeLayout(false);
+			this.panel19.PerformLayout();
+			this.panel26.ResumeLayout(false);
+			this.panel26.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1282,6 +1409,16 @@
 		private System.Windows.Forms.ToolStripComboBox RateComboBox;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripButton ConnectButton;
+		private System.Windows.Forms.GroupBox groupBox6;
+		private System.Windows.Forms.Panel panel18;
+		private System.Windows.Forms.Label label14;
+		private System.Windows.Forms.TextBox AltitudeTextBox;
+		private System.Windows.Forms.Panel panel19;
+		private System.Windows.Forms.Label label15;
+		private System.Windows.Forms.TextBox LocXTextBox;
+		private System.Windows.Forms.Panel panel26;
+		private System.Windows.Forms.Label label16;
+		private System.Windows.Forms.TextBox LocYTextBox;
 	}
 }
 
