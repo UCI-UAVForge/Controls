@@ -78,6 +78,12 @@ namespace ArdupilotTelemetryVisualizer.Serial
 					Packet p = null;
 					switch (pt)
 					{
+						case PacketType.Scalar16:
+						{
+							ushort value = BitConverter.ToUInt16(buffer, 2);
+							p = new Scalar16Packet(value);
+							break;
+						}
 						case PacketType.Scalar32:
 						{
 							Scalar32Type scalarType = (Scalar32Type)buffer[1];

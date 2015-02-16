@@ -104,16 +104,9 @@
 			this.panel25 = new System.Windows.Forms.Panel();
 			this.label21 = new System.Windows.Forms.Label();
 			this.RawThrottleTextBox = new System.Windows.Forms.TextBox();
-			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.panel27 = new System.Windows.Forms.Panel();
-			this.label23 = new System.Windows.Forms.Label();
-			this.MicrosTextBox = new System.Windows.Forms.TextBox();
-			this.panel28 = new System.Windows.Forms.Panel();
-			this.label24 = new System.Windows.Forms.Label();
-			this.MillisTextBox = new System.Windows.Forms.TextBox();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.FreqLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.PacketTimeLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.MicrosLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 			this.PortComboBox = new System.Windows.Forms.ToolStripComboBox();
@@ -132,6 +125,9 @@
 			this.panel26 = new System.Windows.Forms.Panel();
 			this.label16 = new System.Windows.Forms.Label();
 			this.LocYTextBox = new System.Windows.Forms.TextBox();
+			this.panel27 = new System.Windows.Forms.Panel();
+			this.label17 = new System.Windows.Forms.Label();
+			this.GainTextBox = new System.Windows.Forms.TextBox();
 			this.RCGroupBox.SuspendLayout();
 			this.panel4.SuspendLayout();
 			this.panel3.SuspendLayout();
@@ -161,15 +157,13 @@
 			this.panel23.SuspendLayout();
 			this.panel24.SuspendLayout();
 			this.panel25.SuspendLayout();
-			this.groupBox5.SuspendLayout();
-			this.panel27.SuspendLayout();
-			this.panel28.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
 			this.panel18.SuspendLayout();
 			this.panel19.SuspendLayout();
 			this.panel26.SuspendLayout();
+			this.panel27.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// ThrottleTextBox
@@ -827,13 +821,14 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.panel27);
 			this.groupBox4.Controls.Add(this.panel22);
 			this.groupBox4.Controls.Add(this.panel23);
 			this.groupBox4.Controls.Add(this.panel24);
 			this.groupBox4.Controls.Add(this.panel25);
 			this.groupBox4.Location = new System.Drawing.Point(12, 203);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(200, 157);
+			this.groupBox4.Size = new System.Drawing.Size(200, 222);
 			this.groupBox4.TabIndex = 5;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "RC Inputs (RAW)";
@@ -962,85 +957,12 @@
 			this.RawThrottleTextBox.TabIndex = 0;
 			this.RawThrottleTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
-			// groupBox5
-			// 
-			this.groupBox5.Controls.Add(this.panel27);
-			this.groupBox5.Controls.Add(this.panel28);
-			this.groupBox5.Location = new System.Drawing.Point(12, 366);
-			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(200, 96);
-			this.groupBox5.TabIndex = 6;
-			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = "Time";
-			// 
-			// panel27
-			// 
-			this.panel27.Controls.Add(this.label23);
-			this.panel27.Controls.Add(this.MicrosTextBox);
-			this.panel27.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel27.Location = new System.Drawing.Point(3, 56);
-			this.panel27.Name = "panel27";
-			this.panel27.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
-			this.panel27.Size = new System.Drawing.Size(194, 31);
-			this.panel27.TabIndex = 4;
-			// 
-			// label23
-			// 
-			this.label23.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label23.Location = new System.Drawing.Point(4, 2);
-			this.label23.Name = "label23";
-			this.label23.Size = new System.Drawing.Size(86, 27);
-			this.label23.TabIndex = 1;
-			this.label23.Text = "Micros:";
-			this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// MicrosTextBox
-			// 
-			this.MicrosTextBox.Dock = System.Windows.Forms.DockStyle.Right;
-			this.MicrosTextBox.Location = new System.Drawing.Point(90, 2);
-			this.MicrosTextBox.Name = "MicrosTextBox";
-			this.MicrosTextBox.ReadOnly = true;
-			this.MicrosTextBox.Size = new System.Drawing.Size(100, 29);
-			this.MicrosTextBox.TabIndex = 0;
-			this.MicrosTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			// 
-			// panel28
-			// 
-			this.panel28.Controls.Add(this.label24);
-			this.panel28.Controls.Add(this.MillisTextBox);
-			this.panel28.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel28.Location = new System.Drawing.Point(3, 25);
-			this.panel28.Name = "panel28";
-			this.panel28.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
-			this.panel28.Size = new System.Drawing.Size(194, 31);
-			this.panel28.TabIndex = 3;
-			// 
-			// label24
-			// 
-			this.label24.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label24.Location = new System.Drawing.Point(4, 2);
-			this.label24.Name = "label24";
-			this.label24.Size = new System.Drawing.Size(86, 27);
-			this.label24.TabIndex = 1;
-			this.label24.Text = "Millis:";
-			this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// MillisTextBox
-			// 
-			this.MillisTextBox.Dock = System.Windows.Forms.DockStyle.Right;
-			this.MillisTextBox.Location = new System.Drawing.Point(90, 2);
-			this.MillisTextBox.Name = "MillisTextBox";
-			this.MillisTextBox.ReadOnly = true;
-			this.MillisTextBox.Size = new System.Drawing.Size(100, 29);
-			this.MillisTextBox.TabIndex = 0;
-			this.MillisTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			// 
 			// statusStrip1
 			// 
 			this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FreqLabel,
-            this.PacketTimeLabel});
+            this.MicrosLabel});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 560);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(846, 30);
@@ -1053,11 +975,11 @@
 			this.FreqLabel.Size = new System.Drawing.Size(53, 25);
 			this.FreqLabel.Text = "00Hz";
 			// 
-			// PacketTimeLabel
+			// MicrosLabel
 			// 
-			this.PacketTimeLabel.Name = "PacketTimeLabel";
-			this.PacketTimeLabel.Size = new System.Drawing.Size(181, 25);
-			this.PacketTimeLabel.Text = "toolStripStatusLabel1";
+			this.MicrosLabel.Name = "MicrosLabel";
+			this.MicrosLabel.Size = new System.Drawing.Size(22, 25);
+			this.MicrosLabel.Text = "0";
 			// 
 			// toolStrip1
 			// 
@@ -1223,6 +1145,37 @@
 			this.LocYTextBox.TabIndex = 0;
 			this.LocYTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
+			// panel27
+			// 
+			this.panel27.Controls.Add(this.label17);
+			this.panel27.Controls.Add(this.GainTextBox);
+			this.panel27.Dock = System.Windows.Forms.DockStyle.Top;
+			this.panel27.Location = new System.Drawing.Point(3, 149);
+			this.panel27.Name = "panel27";
+			this.panel27.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+			this.panel27.Size = new System.Drawing.Size(194, 31);
+			this.panel27.TabIndex = 6;
+			// 
+			// label17
+			// 
+			this.label17.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label17.Location = new System.Drawing.Point(4, 2);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(86, 27);
+			this.label17.TabIndex = 1;
+			this.label17.Text = "Gain:";
+			this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// GainTextBox
+			// 
+			this.GainTextBox.Dock = System.Windows.Forms.DockStyle.Right;
+			this.GainTextBox.Location = new System.Drawing.Point(90, 2);
+			this.GainTextBox.Name = "GainTextBox";
+			this.GainTextBox.ReadOnly = true;
+			this.GainTextBox.Size = new System.Drawing.Size(100, 29);
+			this.GainTextBox.TabIndex = 0;
+			this.GainTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
@@ -1231,7 +1184,6 @@
 			this.Controls.Add(this.groupBox6);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.statusStrip1);
-			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
@@ -1293,11 +1245,6 @@
 			this.panel24.PerformLayout();
 			this.panel25.ResumeLayout(false);
 			this.panel25.PerformLayout();
-			this.groupBox5.ResumeLayout(false);
-			this.panel27.ResumeLayout(false);
-			this.panel27.PerformLayout();
-			this.panel28.ResumeLayout(false);
-			this.panel28.PerformLayout();
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
@@ -1309,6 +1256,8 @@
 			this.panel19.PerformLayout();
 			this.panel26.ResumeLayout(false);
 			this.panel26.PerformLayout();
+			this.panel27.ResumeLayout(false);
+			this.panel27.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1391,16 +1340,9 @@
 		private System.Windows.Forms.Panel panel25;
 		private System.Windows.Forms.Label label21;
 		private System.Windows.Forms.TextBox RawThrottleTextBox;
-		private System.Windows.Forms.GroupBox groupBox5;
-		private System.Windows.Forms.Panel panel27;
-		private System.Windows.Forms.Label label23;
-		private System.Windows.Forms.TextBox MicrosTextBox;
-		private System.Windows.Forms.Panel panel28;
-		private System.Windows.Forms.Label label24;
-		private System.Windows.Forms.TextBox MillisTextBox;
 		private System.Windows.Forms.StatusStrip statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel FreqLabel;
-		private System.Windows.Forms.ToolStripStatusLabel PacketTimeLabel;
+		private System.Windows.Forms.ToolStripStatusLabel MicrosLabel;
 		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ToolStripLabel toolStripLabel1;
 		private System.Windows.Forms.ToolStripComboBox PortComboBox;
@@ -1419,6 +1361,9 @@
 		private System.Windows.Forms.Panel panel26;
 		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.TextBox LocYTextBox;
+		private System.Windows.Forms.Panel panel27;
+		private System.Windows.Forms.Label label17;
+		private System.Windows.Forms.TextBox GainTextBox;
 	}
 }
 

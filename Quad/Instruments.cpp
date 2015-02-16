@@ -22,7 +22,7 @@ const float MAG_DECLINATION = 12.08; // 12.08 for UCI as of 2015
 namespace Quad
 {
     Instruments::Instruments(const AP_HAL::HAL& hal)
-        : hal(hal), baro(&AP_Baro_MS5611::spi)
+        : hal(hal), baro(&AP_Baro_MS5611::spi), ahrs(&ins, (GPS*&)gps)
     {
         // we need to stop the barometer from holding the SPI bus
         // TODO: Does this stop the barometer from working?
@@ -33,6 +33,7 @@ namespace Quad
         ins.init(AP_InertialSensor::COLD_START,
             AP_InertialSensor::RATE_100HZ,
             NULL);
+
         // initialise sensor fusion on MPU6000 chip (aka DigitalMotionProcessing/DMP)
         hal.scheduler->suspend_timer_procs();  // stop bus collisions
         ins.dmp_init();
@@ -45,6 +46,10 @@ namespace Quad
         // Initialize Barometer
         baro.init();
         baro.calibrate();
+
+        // Initialize ahrs
+        ahrs.init();
+        ahrs.set_compass(&compass);
 
         // Warmup and accumulate error...
         for (int i = 0; i < 1600; i++)
@@ -67,6 +72,7 @@ namespace Quad
         // Wait until new orientation data (normally 5ms max)
         while (ins.num_samples_available() == 0);
 
+        ahrs.update();
         ins.update();
         compass.accumulate();
         baro.accumulate();

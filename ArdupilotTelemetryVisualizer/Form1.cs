@@ -65,7 +65,11 @@ namespace ArdupilotTelemetryVisualizer
 				case PacketType.SSInput:
 					break;
 				case PacketType.Scalar16:
+				{
+					Scalar16Packet packet = (Scalar16Packet)e.Packet;
+					SetRCGain(packet.Value);
 					break;
+				}
 				case PacketType.Scalar32:
 				{
 					Scalar32Packet packet = (Scalar32Packet)e.Packet;
@@ -164,7 +168,7 @@ namespace ArdupilotTelemetryVisualizer
 			}
 			else
 			{
-				MicrosTextBox.Text = value.ToString("#,###");
+				MicrosLabel.Text = value.ToString("#,###");
 				DateTime now = DateTime.Now;
 				TimeSpan dt = now - lastTimePacket;
 				FreqLabel.Text = (50 / dt.TotalSeconds).ToString("#00.000") + "Hz";
@@ -184,6 +188,18 @@ namespace ArdupilotTelemetryVisualizer
 				RawRollTextBox.Text = roll.ToString("#,##0");
 				RawPitchTextBox.Text = pitch.ToString("#,##0");
 				RawYawTextBox.Text = yaw.ToString("#,##0");
+			}
+		}
+
+		void SetRCGain(ushort g)
+		{
+			if (InvokeRequired)
+			{
+				TryInvoke(new Action<ushort>(SetRCGain), g);
+			}
+			else
+			{
+				GainTextBox.Text = g.ToString("#,##0");
 			}
 		}
 		void SetMotorOutput(ushort fl, ushort bl, ushort fr, ushort br)

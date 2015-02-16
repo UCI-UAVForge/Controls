@@ -33,6 +33,9 @@ namespace Quad
         uint16_t GetYaw();
         uint16_t GetPitch();
         uint16_t GetRoll();
+        uint16_t GetGain();
+
+        float GetGainMultiplier();
 
         float GetAltitudeInput();
         Vector2f GetAttitudeInputs();

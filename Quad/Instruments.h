@@ -17,6 +17,8 @@
 
 #pragma once
 
+//#define ENABLE_GPS
+
 #include <AP_Compass.h>
 #include <AP_InertialSensor.h>
 #include <AP_InertialNav.h>
@@ -46,6 +48,13 @@ namespace Quad
         AP_InertialSensor_MPU6000 ins;
         AP_Compass_HMC5843 compass;
         AP_Baro_MS5611 baro;
+#ifdef ENABLE_GPS
+        AP_GPS_UBLOX* gps;
+#else
+        GPS *gps;
+#endif
+
+        AP_AHRS_MPU6000 ahrs;
 
         Vector3f attitudeOffset;
         float headingOffset;

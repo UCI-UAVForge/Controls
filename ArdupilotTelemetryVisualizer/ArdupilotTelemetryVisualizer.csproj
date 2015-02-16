@@ -59,6 +59,7 @@
     <Compile Include="Serial\ComDataReceivedEventArgs.cs" />
     <Compile Include="Serial\Packets\Packet.cs" />
     <Compile Include="Serial\Packets\PacketType.cs" />
+    <Compile Include="Serial\Packets\Scalar16Packet.cs" />
     <Compile Include="Serial\Packets\Scalar32.cs" />
     <Compile Include="Serial\Packets\Scalar32Packet.cs" />
     <Compile Include="Serial\Packets\SSOutputPacket.cs" />

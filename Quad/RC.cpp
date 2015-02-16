@@ -27,6 +27,8 @@ const uint16_t PIT_MIN = 1100;
 const uint16_t PIT_MAX = 1900;
 const uint16_t ROL_MIN = 1100;
 const uint16_t ROL_MAX = 1900;
+const uint16_t GAIN_MIN = 968;
+const uint16_t GAIN_MAX = 2074;
 
 namespace Quad
 {
@@ -56,6 +58,16 @@ namespace Quad
     uint16_t RC::GetPitch()
     {
         return channels[1];
+    }
+
+    uint16_t RC::GetGain()
+    {
+        return channels[5];
+    }
+
+    float RC::GetGainMultiplier()
+    {
+        return Util::Map((float)channels[5], GAIN_MIN, GAIN_MAX, 0, 2);
     }
     
     float RC::GetAltitudeInput()

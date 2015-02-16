@@ -19,13 +19,14 @@
 
 #include <AP_Math.h>
 #include <PID.h>
+#include "RC.h"
 
 namespace Quad
 {
     class RotationRateControl
     {
     public:
-        RotationRateControl();
+        RotationRateControl(RC& rc);
 
         Vector3i Execute(Vector3f targets, Vector3f actual);
         void Reset();
@@ -34,5 +35,7 @@ namespace Quad
         PID pitchPID;
         PID rollPID;
         PID yawPID;
+
+        RC& rc;
     };
 }
