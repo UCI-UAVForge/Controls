@@ -22,21 +22,16 @@ namespace Quad
     RotationRateControl::RotationRateControl(RC& rc)
         : rc(rc)
     {
-        float ku = 1.07;
-        float pu = 2;
         // PID Configuration
-        pitchPID.kP(0.6 * ku);
-        pitchPID.kI(2 * pitchPID.kP() / pu);
-        pitchPID.imax(50);
-        pitchPID.kD(pitchPID.kP() * pu / 8);
-        //pitchPID.kI(0.1);
-        //pitchPID.imax(10);
-        //pitchPID.kD(0.06);
+        pitchPID.kP(1);
+        pitchPID.kI(0.1);
+        pitchPID.imax(10);
+        pitchPID.kD(0.06);
 
-        rollPID.kP(1.25);
+        rollPID.kP(0.95);
         rollPID.kI(0.1);
         rollPID.imax(10);
-        rollPID.kD(0.03);
+        rollPID.kD(0.06);
 
         yawPID.kP(1.5);
         yawPID.kI(0.1);
@@ -45,7 +40,7 @@ namespace Quad
 
     Vector3i RotationRateControl::Execute(Vector3f targets, Vector3f actual)
     {
-        pitchPID.kP(1 * rc.GetGainMultiplier());
+        rollPID.kP(1.25 * rc.GetGainMultiplier());
 
         Vector3f error = targets - actual;
         return Vector3i(
