@@ -201,57 +201,57 @@ int main(void)
             if (flags & 0x0001)
             {
                 comms.SendScalar32(0x01, hal.scheduler->micros());
-                break;
             }
+            break;
         case 1:
             if (flags & 0x0002)
             {
                 comms.SendVector4(0x01, rc.GetThrottle(), rc.GetRoll(), rc.GetPitch(), rc.GetYaw());
-                break;
             }
+            break;
         case 3:
             if (flags & 0x0008)
             {
                 comms.SendVector4(0x03, fl, bl, fr, br);
-                break;
             }
+            break;
         case 5:
             if (flags & 0x0010)
             {
                 comms.SendVector3(0x01, gyro);
-                break;
             }
+            break;
         case 6:
             if (flags & 0x0020)
             {
                 comms.SendVector3(0x02, attitude);
-                break;
             }
+            break;
         case 7:
             if (flags & 0x0040)
             {
                 float heading = ins.GetHeading();
                 comms.SendScalarF(0x02, heading);
-                break;
             }
+            break;
         case 10:
             if (flags & 0x0200)
             {
                 comms.SendVector3(0x05, position);
-                break;
             }
+            break;
         case 12:
             if (flags & 0x0800)
             {
                 comms.SendVector3(0x01, outputs);
-                break;
             }
+            break;
         case 13:
             if (flags & 0x1000)
             {
                 comms.SendVector3(0x08, rateTargets);
-                break;
             }
+            break;
         case 20:
             comms.SendScalar16(0x01, rc.GetGain());
             break;
