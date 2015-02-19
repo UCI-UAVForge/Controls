@@ -45,6 +45,7 @@
 #include "Motors.h"
 #include "Instruments.h"
 #include "RC.h"
+#include "Util.h"
 
 #include "RotationRateControl.h"
 #include "AttitudeControl.h"
@@ -128,13 +129,17 @@ int main(void)
         
         Vector3i outputs;
         Vector3f rateTargets;
-        uint16_t fl;
-        uint16_t bl;
-        uint16_t fr;
-        uint16_t br;
+        uint16_t fl = 0;
+        uint16_t bl = 0;
+        uint16_t fr = 0;
+        uint16_t br = 0;
+        uint32_t lastTime = hal.scheduler->micros();
+        uint32_t time;
         // Do the magic
         if (throttle > rc.GetThrottleMin() + 100) // Throttle raised, turn on stablisation.
         {
+            time = hal.scheduler->micros();
+
             Vector2f attitude2D;
 #ifdef VELOCITY_CONTROL
             Vector2f rcVelocity = rc.GetVelocityInputs();
@@ -160,10 +165,17 @@ int main(void)
             outputs = rrc.Execute(rateTargets, gyro);
 
             // mix pid outputs and send to the motors.
-            fl = throttle + outputs.x + outputs.y + outputs.z;
-            bl = throttle + outputs.x - outputs.y - outputs.z;
-            fr = throttle - outputs.x + outputs.y - outputs.z;
-            br = throttle - outputs.x - outputs.y + outputs.z;
+            float dt = (time - lastTime) / 1000000;
+            uint16_t newFL = min(1200, throttle + outputs.x + outputs.y + outputs.z);
+            uint16_t newBL = min(1200, throttle + outputs.x - outputs.y - outputs.z);
+            uint16_t newFR = min(1200, throttle - outputs.x + outputs.y - outputs.z);
+            uint16_t newBR = min(1200, throttle - outputs.x - outputs.y + outputs.z);
+
+            Quad::Util::Filter(newFL, fl, dt);
+            Quad::Util::Filter(newBL, bl, dt);
+            Quad::Util::Filter(newFR, fr, dt);
+            Quad::Util::Filter(newBR, br, dt);
+
             motors.SetFrontLeft(fl);
             motors.SetBackLeft(bl);
             motors.SetFrontRight(fr);
@@ -181,6 +193,7 @@ int main(void)
             altc.Reset();
             altrc.Reset();
         }
+        lastTime = time;
         
         switch (iterCounter)
         {

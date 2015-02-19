@@ -48,5 +48,16 @@ namespace Quad
             }
             return value;
         }
+
+        // f_cut = 10 Hz -> _filter = 15.9155e-3
+        // f_cut = 15 Hz -> _filter = 10.6103e-3
+        // f_cut = 20 Hz -> _filter =  7.9577e-3
+        // f_cut = 25 Hz -> _filter =  6.3662e-3
+        // f_cut = 30 Hz -> _filter =  5.3052e-3
+        const float rc = 5.3052e-3; // Set to  "1 / ( 2 * PI * f_cut )";
+        void Filter(uint16_t current, uint16_t& last, float dt)
+        {
+            last = last + (dt / (rc + dt)) * (current - last);
+        }
     }
 }
