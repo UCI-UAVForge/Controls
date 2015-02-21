@@ -24,6 +24,8 @@ namespace Quad
     Instruments::Instruments(const AP_HAL::HAL& hal)
         : hal(hal), baro(&AP_Baro_MS5611::spi), ahrs(&ins, (GPS*&)gps)
     {
+        lastUpdate = hal.scheduler->micros();
+
         // we need to stop the barometer from holding the SPI bus
         // TODO: Does this stop the barometer from working?
         hal.gpio->pinMode(40, GPIO_OUTPUT);
@@ -72,10 +74,17 @@ namespace Quad
         // Wait until new orientation data (normally 5ms max)
         while (ins.num_samples_available() == 0);
 
+        uint32_t updateTime = hal.scheduler->micros();
+
         ahrs.update();
         ins.update();
         compass.accumulate();
         baro.accumulate();
+
+        // Magical yaw corrections
+        float dt = (updateTime - lastUpdate) / 1000000.0F;
+        attitudeOffset.z -= 0.00002 * dt;
+        lastUpdate = updateTime;
     }
 
     Vector3f Instruments::GetAcceleration()

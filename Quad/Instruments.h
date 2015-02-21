@@ -58,5 +58,7 @@ namespace Quad
 
         Vector3f attitudeOffset;
         float headingOffset;
+
+        uint32_t lastUpdate;
     };
 }
