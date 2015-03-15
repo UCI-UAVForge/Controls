@@ -36,6 +36,9 @@
 #include <AP_HAL_Empty.h>
 
 // Application dependencies
+// TODO: We probably don't need a lot of these dependencies, and removing them
+//       may speed up compilation. Unfortunately, they are highly
+//       interconnected, making it difficult to prune the list.
 #include <GCS.h>
 #include <GCS_MAVLink.h>        // MAVLink GCS definitions
 #include <AP_SerialManager.h>   // Serial manager library
@@ -90,6 +93,7 @@
 #include <PID.h>
 
 
+// Utility functions. Used primarily to keep control outputs within range.
 float Map(float x, float in_min, float in_max, float out_min, float out_max)
 {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -146,6 +150,9 @@ AP_Compass_PX4 compass;
 //#error Unrecognized CONFIG_COMPASS setting
 //#endif
 
+// TODO: Analyze whether there is ever a situation where we can't use NavEKF.
+//       Seems like NavEKF falls back to DCM anyway if there's a problem, so
+//       we probably don't need to bother with preprocessor here.
 //#if AP_AHRS_NAVEKF_AVAILABLE
 AP_AHRS_NavEKF ahrs = AP_AHRS_NavEKF(ins, barometer, gps);
 //#else
@@ -239,23 +246,38 @@ PID yawPID;
 
 void setup()
 {
-    //hal.scheduler->system_initialized();
-    hal.uartE->begin(115200);
+    ////////////////////
+    //// COMMS INIT ////
+    ////////////////////
+    // Used to receive control input from the Arduino
     hal.uartD->begin(115200);
+    // Used to output telemetry info
     hal.console->begin(115200);
+    ////////////////////////
+    //// END COMMS INIT ////
+    ////////////////////////
 
+    /////////////////////////
+    //// INSTRUMENT INIT ////
+    /////////////////////////
+    // COLD_START assumes the vehicle is stationary on a level surface.
     ins.init(AP_InertialSensor::COLD_START, AP_InertialSensor::RATE_100HZ);
     compass.init();
     barometer.init();
-    barometer.calibrate();
+    barometer.calibrate(); // Sets the vehicle's current altitude to 0.
     ahrs.init();
     ahrs.set_compass(&compass);
+    /////////////////////////////
+    //// END INSTRUMENT INIT ////
+    /////////////////////////////
 
+    // Enable motor outputs. Motors still won't turn until the arming switch
+    // is activated.
     hal.rcout->enable_ch(0);
     hal.rcout->enable_ch(1);
     hal.rcout->enable_ch(2);
     hal.rcout->enable_ch(3);
-    
+
     //////////////////
     //// RRC INIT ////
     //////////////////
@@ -270,9 +292,9 @@ void setup()
     rrcRollPID.kD(0.03);
 
     rrcYawPID.kP(2.0);
+    // Disabled integral on yaw because it was causing the quad to over-correct
     //rrcYawPID.kI(0.1);
     //rrcYawPID.imax(10);
-    //rrcYawPID.kD(0.01);
     //////////////////////
     //// END RRC INIT ////
     //////////////////////
@@ -292,19 +314,25 @@ void setup()
 
 void loop()
 {
-    static uint8_t iterCounter;
     static float yawHoldAngle = 0;
+
+    // Used to filter barometer readings.
     static int lastTime;
     int now = hal.scheduler->micros();
     int dt = now - lastTime;
+
+    // Track iterations and only send telemtry every 50 iterations.
+    static uint8_t iterCounter;
     ++iterCounter;
     iterCounter %= 50;
-    
+
+    // Read comms input
     int result = Read();
     SendScalar32(0xFF, (uint32_t)result);
+    // For testing purposes, just output everything all the time.
     //uint16_t flags = GetOutputFlags();
     uint16_t flags = 0xFFFF;
-    
+
     ////////////////////////////
     //// INSTRUMENTS UPDATE ////
     ////////////////////////////
@@ -316,6 +344,7 @@ void loop()
     Vector3f attitude = Vector3f(ToDeg(ahrs.roll), ToDeg(ahrs.pitch), ToDeg(ahrs.yaw));
 
     barometer.update();
+    // Filtered altitude data
     //static float lastAlt;
     //float alt = barometer.get_altitude();
     //float RC = 1 / (2 * PI*4);
@@ -325,8 +354,7 @@ void loop()
     //Vector3f position = Vector3f(0, 0, alt);
     Location l;
     ahrs.get_position(l);
-    float useEKF = ahrs.using_EKF() ? 1 : 0;
-    Vector3f position(useEKF, l.lng, l.alt);
+    Vector3f position(l.lat, l.lng, l.alt);
     ////////////////////////////////
     //// END INSTRUMENTS UPDATE ////
     ////////////////////////////////
@@ -355,10 +383,10 @@ void loop()
     Vector3f attError;
     // Do the magic
     if (throttle > THR_MIN + 100) // Throttle raised, turn on stablisation.
-    {   
+    {
         // Input targets
         Vector3f attitudeInputs = Vector3f(attitude2D.x, attitude2D.y, yawHoldAngle);
-    
+
         // Stablise PIDS
         attError = attitudeInputs - attitude;
         rateTargets = Vector3f(
@@ -370,14 +398,18 @@ void loop()
             rateTargets.z = rcYaw;
             yawHoldAngle = attitude.z;
         }
-    
+
         // rate PIDS
+        // TODO: Tune rate limits. At 500, a roll doublet was enough to
+        //       destabalize and crash the quad. 250 is probably too low, but
+        //       I'm leaving it there in the hope that it will make the quad
+        //       nearly bulletproof.
         Vector3f rrcError = rateTargets - gyro;
         outputs = Vector3i(
-            Constrain(rrcRollPID.get_pid(rrcError.x, 1), -500, 500),
-            Constrain(rrcPitchPID.get_pid(rrcError.y, 1), -500, 500),
-            Constrain(rrcYawPID.get_pid(rrcError.z, 1), -500, 500));
-    
+            Constrain(rrcRollPID.get_pid(rrcError.x, 1), -250, 250),
+            Constrain(rrcPitchPID.get_pid(rrcError.y, 1), -250, 250),
+            Constrain(rrcYawPID.get_pid(rrcError.z, 1), -250, 250));
+
         // mix pid outputs and send to the motors.
         fl = throttle + outputs.x + outputs.y + outputs.z;
         bl = throttle + outputs.x - outputs.y - outputs.z;
@@ -394,19 +426,14 @@ void loop()
         hal.rcout->write(BL, 1000);
         hal.rcout->write(FR, 1000);
         hal.rcout->write(BR, 1000);
-    
-        // reset PID integrals whilst on the ground
-        //vc.Reset();
 
+        // reset PID integrals whilst on the ground
         pitchPID.reset_I();
         rollPID.reset_I();
 
         rrcPitchPID.reset_I();
         rrcRollPID.reset_I();
         rrcYawPID.reset_I();
-    
-        //altc.Reset();
-        //altrc.Reset();
     }
     //////////////////////////
     //// END CONTROL LOOP ////
@@ -417,18 +444,12 @@ void loop()
     {
         SendScalar32(0x01, now);
     }
-    if (flags & 0x0200)
-    {
-        SendVector3(0x05, position);
-    }
     switch (iterCounter)
     {
-    //case 0:
-    //    if (flags & 0x0001)
-    //    {
-    //        SendScalar32(0x01, hal.scheduler->micros());
-    //    }
-    //    break;
+    case 0:
+        // This was originally the clock, but I find it's better to send
+        // the clock on every iteration.
+        break;
     case 1:
         if (flags & 0x0002)
         {
@@ -453,19 +474,18 @@ void loop()
             SendVector3(0x02, attitude);
         }
         break;
-    //case 7:
-    //    if (flags & 0x0040)
-    //    {
-    //        float heading = ins.GetHeading();
-    //        SendScalarF(0x02, heading);
-    //    }
-    //    break;
-    //case 10:
-    //    if (flags & 0x0200)
-    //    {
-    //        SendVector3(0x05, position);
-    //    }
-    //    break;
+    case 7:
+        //if (flags & 0x0040)
+        //{
+        //    SendScalarF(0x02, heading);
+        //}
+        break;
+    case 10:
+        if (flags & 0x0200)
+        {
+            SendVector3(0x05, position);
+        }
+        break;
     case 12:
         if (flags & 0x0800)
         {
@@ -478,9 +498,9 @@ void loop()
             SendVector3(0x08, rateTargets);
         }
         break;
-    //case 20:
-    //    SendScalar16(0x01, rc.GetGain());
-    //    break;
+        //case 20:
+        //    SendScalar16(0x01, rc.GetGain());
+        //    break;
     default:
         break;
     }
@@ -535,7 +555,7 @@ int Read()
     {
         return -6;
     }
-        
+
     HandlePacket();
     bytesInBuffer = 0;
     return ++counter;
