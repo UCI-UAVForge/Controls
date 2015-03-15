@@ -30,6 +30,8 @@ namespace ArdupilotTelemetryVisualizer.Serial.Packets
 	internal enum Scalar32Type
 	{
 		Clock = 1,
-		Heading
+		Heading,
+
+		Debug = 255
 	}
 }

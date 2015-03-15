@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
+using System.IO;
 
 namespace ArdupilotTelemetryVisualizer.Serial
 {
@@ -143,7 +144,11 @@ namespace ArdupilotTelemetryVisualizer.Serial
 					throw new InvalidOperationException("Not connected");
 				}
 
-				sp.Write(data, 0, data.Length);
+				try
+				{
+					sp.Write(data, 0, data.Length);
+				}
+				catch (IOException) { }
 			}
 		}
 

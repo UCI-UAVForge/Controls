@@ -92,6 +92,9 @@
 			this.FrontRightTextBox = new System.Windows.Forms.TextBox();
 			this.FrontLeftTextBox = new System.Windows.Forms.TextBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.panel27 = new System.Windows.Forms.Panel();
+			this.label17 = new System.Windows.Forms.Label();
+			this.GainTextBox = new System.Windows.Forms.TextBox();
 			this.panel22 = new System.Windows.Forms.Panel();
 			this.label18 = new System.Windows.Forms.Label();
 			this.RawYawTextBox = new System.Windows.Forms.TextBox();
@@ -107,6 +110,7 @@
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.FreqLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.MicrosLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.DebugLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
 			this.PortComboBox = new System.Windows.Forms.ToolStripComboBox();
@@ -115,6 +119,8 @@
 			this.RateComboBox = new System.Windows.Forms.ToolStripComboBox();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.ConnectButton = new System.Windows.Forms.ToolStripButton();
+			this.StatusLabel = new System.Windows.Forms.ToolStripLabel();
+			this.LastPacketLabel = new System.Windows.Forms.ToolStripLabel();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.panel18 = new System.Windows.Forms.Panel();
 			this.label14 = new System.Windows.Forms.Label();
@@ -125,9 +131,6 @@
 			this.panel26 = new System.Windows.Forms.Panel();
 			this.label16 = new System.Windows.Forms.Label();
 			this.LocYTextBox = new System.Windows.Forms.TextBox();
-			this.panel27 = new System.Windows.Forms.Panel();
-			this.label17 = new System.Windows.Forms.Label();
-			this.GainTextBox = new System.Windows.Forms.TextBox();
 			this.RCGroupBox.SuspendLayout();
 			this.panel4.SuspendLayout();
 			this.panel3.SuspendLayout();
@@ -153,6 +156,7 @@
 			this.panel20.SuspendLayout();
 			this.panel21.SuspendLayout();
 			this.groupBox4.SuspendLayout();
+			this.panel27.SuspendLayout();
 			this.panel22.SuspendLayout();
 			this.panel23.SuspendLayout();
 			this.panel24.SuspendLayout();
@@ -163,7 +167,6 @@
 			this.panel18.SuspendLayout();
 			this.panel19.SuspendLayout();
 			this.panel26.SuspendLayout();
-			this.panel27.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// ThrottleTextBox
@@ -833,6 +836,37 @@
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "RC Inputs (RAW)";
 			// 
+			// panel27
+			// 
+			this.panel27.Controls.Add(this.label17);
+			this.panel27.Controls.Add(this.GainTextBox);
+			this.panel27.Dock = System.Windows.Forms.DockStyle.Top;
+			this.panel27.Location = new System.Drawing.Point(3, 149);
+			this.panel27.Name = "panel27";
+			this.panel27.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+			this.panel27.Size = new System.Drawing.Size(194, 31);
+			this.panel27.TabIndex = 6;
+			// 
+			// label17
+			// 
+			this.label17.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.label17.Location = new System.Drawing.Point(4, 2);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(86, 27);
+			this.label17.TabIndex = 1;
+			this.label17.Text = "Gain:";
+			this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// GainTextBox
+			// 
+			this.GainTextBox.Dock = System.Windows.Forms.DockStyle.Right;
+			this.GainTextBox.Location = new System.Drawing.Point(90, 2);
+			this.GainTextBox.Name = "GainTextBox";
+			this.GainTextBox.ReadOnly = true;
+			this.GainTextBox.Size = new System.Drawing.Size(100, 29);
+			this.GainTextBox.TabIndex = 0;
+			this.GainTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
 			// panel22
 			// 
 			this.panel22.Controls.Add(this.label18);
@@ -962,7 +996,8 @@
 			this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FreqLabel,
-            this.MicrosLabel});
+            this.MicrosLabel,
+            this.DebugLabel});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 560);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(846, 30);
@@ -981,6 +1016,12 @@
 			this.MicrosLabel.Size = new System.Drawing.Size(22, 25);
 			this.MicrosLabel.Text = "0";
 			// 
+			// DebugLabel
+			// 
+			this.DebugLabel.Name = "DebugLabel";
+			this.DebugLabel.Size = new System.Drawing.Size(22, 25);
+			this.DebugLabel.Text = "0";
+			// 
 			// toolStrip1
 			// 
 			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
@@ -991,7 +1032,9 @@
             this.toolStripLabel2,
             this.RateComboBox,
             this.toolStripSeparator2,
-            this.ConnectButton});
+            this.ConnectButton,
+            this.StatusLabel,
+            this.LastPacketLabel});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(846, 33);
@@ -1039,6 +1082,20 @@
 			this.ConnectButton.Size = new System.Drawing.Size(81, 30);
 			this.ConnectButton.Text = "Connect";
 			this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
+			// 
+			// StatusLabel
+			// 
+			this.StatusLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.StatusLabel.Name = "StatusLabel";
+			this.StatusLabel.Size = new System.Drawing.Size(119, 30);
+			this.StatusLabel.Text = "Disconnected";
+			// 
+			// LastPacketLabel
+			// 
+			this.LastPacketLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.LastPacketLabel.Name = "LastPacketLabel";
+			this.LastPacketLabel.Size = new System.Drawing.Size(103, 30);
+			this.LastPacketLabel.Text = "Last Packet:";
 			// 
 			// groupBox6
 			// 
@@ -1145,37 +1202,6 @@
 			this.LocYTextBox.TabIndex = 0;
 			this.LocYTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
-			// panel27
-			// 
-			this.panel27.Controls.Add(this.label17);
-			this.panel27.Controls.Add(this.GainTextBox);
-			this.panel27.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel27.Location = new System.Drawing.Point(3, 149);
-			this.panel27.Name = "panel27";
-			this.panel27.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
-			this.panel27.Size = new System.Drawing.Size(194, 31);
-			this.panel27.TabIndex = 6;
-			// 
-			// label17
-			// 
-			this.label17.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label17.Location = new System.Drawing.Point(4, 2);
-			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(86, 27);
-			this.label17.TabIndex = 1;
-			this.label17.Text = "Gain:";
-			this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// GainTextBox
-			// 
-			this.GainTextBox.Dock = System.Windows.Forms.DockStyle.Right;
-			this.GainTextBox.Location = new System.Drawing.Point(90, 2);
-			this.GainTextBox.Name = "GainTextBox";
-			this.GainTextBox.ReadOnly = true;
-			this.GainTextBox.Size = new System.Drawing.Size(100, 29);
-			this.GainTextBox.TabIndex = 0;
-			this.GainTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
@@ -1192,7 +1218,7 @@
 			this.Controls.Add(this.RCGroupBox);
 			this.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Text = "Telemetry Visualizer";
 			this.RCGroupBox.ResumeLayout(false);
 			this.panel4.ResumeLayout(false);
 			this.panel4.PerformLayout();
@@ -1237,6 +1263,8 @@
 			this.panel21.ResumeLayout(false);
 			this.panel21.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
+			this.panel27.ResumeLayout(false);
+			this.panel27.PerformLayout();
 			this.panel22.ResumeLayout(false);
 			this.panel22.PerformLayout();
 			this.panel23.ResumeLayout(false);
@@ -1256,8 +1284,6 @@
 			this.panel19.PerformLayout();
 			this.panel26.ResumeLayout(false);
 			this.panel26.PerformLayout();
-			this.panel27.ResumeLayout(false);
-			this.panel27.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1364,6 +1390,9 @@
 		private System.Windows.Forms.Panel panel27;
 		private System.Windows.Forms.Label label17;
 		private System.Windows.Forms.TextBox GainTextBox;
+		private System.Windows.Forms.ToolStripStatusLabel DebugLabel;
+		private System.Windows.Forms.ToolStripLabel StatusLabel;
+		private System.Windows.Forms.ToolStripLabel LastPacketLabel;
 	}
 }
 

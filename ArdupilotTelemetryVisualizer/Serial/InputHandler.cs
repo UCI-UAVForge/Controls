@@ -114,7 +114,7 @@ namespace ArdupilotTelemetryVisualizer.Serial
 							break;
 						}
 						default:
-							throw new InvalidOperationException(String.Format("Unknown type: {0}", pt));
+							//throw new InvalidOperationException(String.Format("Unknown type: {0}", pt));
 							break;
 					}
 

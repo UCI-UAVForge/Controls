@@ -22,11 +22,14 @@ namespace ArdupilotTelemetryVisualizer
 		InputHandler ih;
 		OutputHandler oh;
 		DateTime lastTimePacket = DateTime.Now;
+		string logName;
+		uint ticks;
 		
 
 		public Form1()
 		{
 			InitializeComponent();
+			logName = "Altitude-" + DateTime.Now.ToString("yyyy-MM-dd-hh-mm") + ".csv";
 
 			controller = new ComController();
 			ih = new InputHandler(controller);
@@ -40,6 +43,18 @@ namespace ArdupilotTelemetryVisualizer
 			RateComboBox.SelectedIndex = RateComboBox.Items.Count - 1;
 
 			ih.PacketReceived += ih_PacketReceived;
+			controller.Connected += controller_Connected;
+			controller.Disconnected += controller_Disconnected;
+		}
+
+		void controller_Disconnected(object sender, EventArgs e)
+		{
+			StatusLabel.Text = "Disconnected";
+		}
+
+		void controller_Connected(object sender, EventArgs e)
+		{
+			StatusLabel.Text = "Connected";
 		}
 
 		protected override void OnFormClosing(FormClosingEventArgs e)
@@ -54,6 +69,7 @@ namespace ArdupilotTelemetryVisualizer
 
 		void ih_PacketReceived(object sender, PacketReceivedEventArgs e)
 		{
+			SetLastPacket();
 			switch (e.Packet.Type)
 			{
 				case PacketType.Ping:
@@ -77,9 +93,13 @@ namespace ArdupilotTelemetryVisualizer
 					{
 						case Scalar32Type.Clock:
 							SetClock(packet.Value.UInt32Value);
+							ticks = packet.Value.UInt32Value;
 							break;
 						case Scalar32Type.Heading:
 							SetHeading(packet.Value.SingleValue);
+							break;
+						case Scalar32Type.Debug:
+							SetDebug(packet.Value.Int32Value);
 							break;
 						default:
 							break;
@@ -120,6 +140,10 @@ namespace ArdupilotTelemetryVisualizer
 							break;
 						case Vector3_32Type.Position:
 							SetPosition(packet.Value.SingleX, packet.Value.SingleY, packet.Value.SingleZ);
+							using(StreamWriter sw = new StreamWriter(logName, true))
+							{
+								sw.WriteLine("{0},{1}", ticks, packet.Value.SingleZ);
+							}
 							break;
 						case Vector3_32Type.Gps:
 							break;
@@ -160,6 +184,18 @@ namespace ArdupilotTelemetryVisualizer
 			}
 		}
 
+		void SetLastPacket()
+		{
+			if (InvokeRequired)
+			{
+				TryInvoke(new Action(SetLastPacket));
+			}
+			else
+			{
+				LastPacketLabel.Text = DateTime.Now.ToString("HH:mm:ss");
+			}
+		}
+
 		void SetClock(uint value)
 		{
 			if (InvokeRequired)
@@ -171,7 +207,7 @@ namespace ArdupilotTelemetryVisualizer
 				MicrosLabel.Text = value.ToString("#,###");
 				DateTime now = DateTime.Now;
 				TimeSpan dt = now - lastTimePacket;
-				FreqLabel.Text = (50 / dt.TotalSeconds).ToString("#00.000") + "Hz";
+				FreqLabel.Text = (1 / dt.TotalSeconds).ToString("000.000") + "Hz";
 				lastTimePacket = now;
 			}
 		}
@@ -257,6 +293,18 @@ namespace ArdupilotTelemetryVisualizer
 			}
 		}
 
+		void SetDebug(int v)
+		{
+			if (InvokeRequired)
+			{
+				TryInvoke(new Action<int>(SetDebug), v);
+			}
+			else
+			{
+				DebugLabel.Text = v.ToString("#,##0");
+			}
+		}
+
 		void SetRotationRatePid(short x, short y, short z)
 		{
 			if (InvokeRequired)
@@ -305,7 +353,7 @@ namespace ArdupilotTelemetryVisualizer
 			controller.ComPort = PortComboBox.Text;
 			controller.Connect();
 
-			oh.SendSSOutput(0xFFFF);
+			//oh.SendSSOutput(0xFFFF);
 		}
 
 		private void TryInvoke(Delegate d, params object[] args)
